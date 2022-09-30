@@ -1,22 +1,36 @@
 import { Button } from "antd";
 import { PencilSimpleLine, Trash } from "phosphor-react";
 
-export function JobCard() {
+interface Props {
+  name: string;
+  deadline: string;
+  value: number;
+  status: "IN-PROGRESS" | "CLOSED";
+}
+
+export function JobCard({ name, deadline, value, status }: Props) {
   return (
-    <div className="grid grid-cols-3 bg-zinc-100 gap-4 px-4 py-6 rounded mx-4">
+    <div className="grid grid-cols-3 bg-zinc-100 gap-4 px-4 py-6 rounded mx-4 shadow-xl">
       <div className="flex col-span-2 flex-col gap-2">
         <div id="JobName" className="flex items-center">
-          <span className="text-zinc-700 text-xl font-medium overflow-hidden text-ellipsis">JobWorkFrellaNamessssssssssss</span>
+          <span className="text-zinc-700 text-xl font-medium overflow-hidden text-ellipsis">
+            {name}
+          </span>
         </div>
 
         <div id="JobPrazo" className="flex flex-col">
           <span className="text-sm text-zinc-500">Prazo</span>
-          <span className="text-zinc-700">ValueValue</span>
+          <span className="text-zinc-700">{deadline}</span>
         </div>
 
         <div id="JobValor" className="flex flex-col justify-center">
           <span className="text-sm text-zinc-500">Valor</span>
-          <span className="text-zinc-700">R$ 000.000,00</span>
+          <span className="text-zinc-700">
+            {value.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            })}
+          </span>
         </div>
       </div>
 
@@ -25,7 +39,9 @@ export function JobCard() {
           id="JobStatus"
           className="bg-red-300/20 text-red-700 px-2 py-1 text-sm text-center rounded w-fit self-end"
         >
-          <span className="whitespace-nowrap">Em andamento</span>
+          <span className="whitespace-nowrap">
+            {status == "CLOSED" ? "ENCERRADO" : "EM ANDAMENTO"}
+          </span>
         </div>
 
         <div id="JobHomeComponentButtons" className="flex justify-end gap-2">
