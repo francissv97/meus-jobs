@@ -1,33 +1,15 @@
-import { Logo } from "../components/Logo";
+import { Header } from "../components/Header";
+import { JobCard } from "../components/JobCard";
 
 export function Home() {
   return (
     <div>
-      <Logo />
+      <Header />
 
-      <div id="ContainerJobsList">
-        <div id="ComponentHomeJob">
-          <div id="JobName">
-            <strong>JobName</strong>
-          </div>
-
-          <div id="JobPrazo">
-            <span>Prazo</span>
-            <span>Value</span>
-          </div>
-
-          <div id="JobValor">
-            <span>Valor</span>
-            <span>R$ 1.200,00</span>
-          </div>
-
-          <div id="JobStatus">Em andamento</div>
-
-          <div id="JobHomeComponentButtons">
-            <button id="JobEdit">Editar</button>
-            <button id="JobRemove">Remover</button>
-          </div>
-        </div>
+      <div id="ContainerJobsList" className="flex flex-col gap-4 mt-4 max-w-4xl mx-auto -translate-y-12">
+        <JobCard />
+        {/* <JobCard />
+        <JobCard /> */}
       </div>
     </div>
   );
