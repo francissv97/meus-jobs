@@ -1,5 +1,5 @@
 import { Button } from "antd";
-import { PencilSimpleLine, Trash } from "phosphor-react";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 interface Props {
   name: string;
@@ -47,14 +47,14 @@ export function JobCard({ name, deadline, value, status }: Props) {
         <div id="JobHomeComponentButtons" className="flex justify-end gap-2">
           <Button
             id="JobEdit"
-            icon={<PencilSimpleLine size={22} />}
-            className="flex items-center justify-center bg-zinc-500 text-white p-2 rounded transition hover:bg-zinc-600"
+            icon={<EditOutlined className="text-2xl" />}
+            className="flex items-center justify-center bg-zinc-500 text-white p-2 rounded transition hover:bg-zinc-400"
           />
           <Button
             id="JobRemove"
             shape="circle"
-            icon={<Trash size={22} />}
-            className="flex items-center justify-center bg-red-700 text-white p-2 rounded transition hover:bg-red-800"
+            icon={<DeleteOutlined className="text-2xl" />}
+            className="flex items-center justify-center bg-red-700 text-white p-2 rounded transition hover:bg-red-600"
           />
         </div>
       </div>
