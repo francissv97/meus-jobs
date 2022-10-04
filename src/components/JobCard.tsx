@@ -1,4 +1,3 @@
-import { Button } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 interface Props {
@@ -45,17 +44,19 @@ export function JobCard({ name, deadline, value, status }: Props) {
         </div>
 
         <div id="JobHomeComponentButtons" className="flex justify-end gap-2">
-          <Button
+          <button
             id="JobEdit"
-            icon={<EditOutlined className="text-xl" />}
             className="flex items-center justify-center bg-zinc-500 text-white py-1 px-2 rounded transition hover:bg-zinc-400"
-          />
-          <Button
+          >
+            <EditOutlined className="text-xl" />
+          </button>
+
+          <button
             id="JobRemove"
-            shape="circle"
-            icon={<DeleteOutlined className="text-xl" />}
             className="flex items-center justify-center bg-red-700 text-white py-1 px-2 rounded transition hover:bg-red-600"
-          />
+          >
+            <DeleteOutlined className="text-xl" />
+          </button>
         </div>
       </div>
     </div>
