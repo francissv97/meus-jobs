@@ -4,35 +4,37 @@ import {
   LogoutOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import "antd/dist/antd.css";
+import { useAuth } from "../hooks/useAuth";
 
 interface Props {
   name: string;
   avatar: string;
 }
 
-const popoverContent = (
-  <div className="m-0 flex flex-col gap-2">
-    <Button
-      className="flex items-center justify-center text-base"
-      icon={<UserOutlined className="text-lg" />}
-    >
-      Perfil
-    </Button>
-    <Button
-      danger
-      className="flex items-center justify-center text-base"
-      icon={<LogoutOutlined className="text-lg" />}
-    >
-      Logout
-    </Button>
-  </div>
-);
-
 export function UserInfo({ name, avatar }: Props) {
+  const { logOut } = useAuth();
+
   return (
     <Popover
-      content={popoverContent}
+      content={
+        <div className="m-0 flex flex-col gap-2">
+          <Button
+            className="flex items-center justify-center text-base"
+            icon={<UserOutlined className="text-lg" />}
+          >
+            Perfil
+          </Button>
+
+          <Button
+            danger
+            className="flex items-center justify-center text-base"
+            icon={<LogoutOutlined className="text-lg" />}
+            onClick={logOut}
+          >
+            Logout
+          </Button>
+        </div>
+      }
       placement="bottomLeft"
       title={name}
       className="flex gap-1 items-center justify-center cursor-pointer"
