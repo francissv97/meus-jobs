@@ -34,13 +34,13 @@ export function SignIn() {
           </span>
         </div>
 
-        <Button
-          icon={<GoogleOutlined className="text-3xl" />}
+        <button
           onClick={signInWithGoogle}
-          className="flex items-center gap-1 text-xl  bg-gradient-to-bl from-orange-400 to-orange-600 text-zinc-100 p-2 rounded w-fit transition hover:scale-105"
+          className="flex items-center gap-1 text-xl border-2 border-orange-500 text-orange-500 p-2 rounded w-fit transition hover:scale-[102%] hover:text-zinc-50 hover:bg-orange-500"
         >
+          <GoogleOutlined className="text-3xl" />
           Continuar com o Google
-        </Button>
+        </button>
 
         <Footer tailwindStyle="absolute bottom-2" />
       </div>
