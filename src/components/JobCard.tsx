@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { PencilSimpleLine, TrashSimple } from "phosphor-react";
 
 interface Props {
   name: string;
@@ -48,14 +48,14 @@ export function JobCard({ name, deadline, value, status }: Props) {
             id="JobEdit"
             className="flex items-center justify-center bg-zinc-500 text-white py-1 px-2 rounded transition hover:bg-zinc-400"
           >
-            <EditOutlined className="text-xl" />
+            <PencilSimpleLine size={26} />
           </button>
 
           <button
             id="JobRemove"
             className="flex items-center justify-center bg-red-700 text-white py-1 px-2 rounded transition hover:bg-red-600"
           >
-            <DeleteOutlined className="text-xl" />
+            <TrashSimple size={26} />
           </button>
         </div>
       </div>

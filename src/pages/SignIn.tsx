@@ -2,7 +2,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Button } from "antd";
 import { Logo } from "../components/Logo";
 import { Footer } from "../components/Footer";
-import { GoogleOutlined } from "@ant-design/icons";
+import { GoogleLogo, GooglePhotosLogo } from "phosphor-react";
 import bgOne from "../assets/backgroundOne.jpg";
 import bgTwo from "../assets/backgroundTwo.jpg";
 
@@ -36,9 +36,9 @@ export function SignIn() {
 
         <button
           onClick={signInWithGoogle}
-          className="flex items-center gap-1 text-xl border-2 border-orange-500 text-orange-500 p-2 rounded w-fit transition hover:scale-[102%] hover:text-zinc-50 hover:bg-orange-500"
+          className="flex items-center gap-1 text-xl border-2 border-orange-500 text-orange-500 p-2 rounded w-fit transition hover:text-zinc-50 hover:bg-orange-500"
         >
-          <GoogleOutlined className="text-3xl" />
+          <GoogleLogo size={28} />
           Continuar com o Google
         </button>
 
