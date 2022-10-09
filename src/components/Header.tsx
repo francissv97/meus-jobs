@@ -19,7 +19,7 @@ export function Header() {
         </div>
 
         <button
-          // onClick={() => createUserDocument("francissv97@gamil.com")}
+          onClick={() => createUserDocument("francissv97@gamil.com")}
           className="flex items-center gap-2 bg-orange-500 text-zinc-100 text-lg p-2 rounded self-end mx-4"
         >
           <Plus size={26} />
