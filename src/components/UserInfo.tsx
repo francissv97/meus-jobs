@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { Popover } from "antd";
 import { CaretDown, User, SignOut } from "phosphor-react";
@@ -8,17 +9,20 @@ interface Props {
 }
 
 export function UserInfo({ name, avatar }: Props) {
+  const navigate = useNavigate();
   const { logOut } = useAuth();
 
   return (
     <Popover
       placement="bottomRight"
-      color="#eee"
       content={
         <div className="flex flex-col gap-2">
           <strong className="font-medium text-lg text-zinc-600">{name}</strong>
 
-          <button className="flex items-center justify-center gap-1 p-1 text-base text-sky-600 border border-sky-600 hover:text-sky-500 hover:border-sky-500 rounded">
+          <button
+            onClick={() => navigate("/profile")}
+            className="flex items-center justify-center gap-1 p-1 text-base text-sky-600 border border-sky-600 hover:text-sky-500 hover:border-sky-500 rounded"
+          >
             <User size={22} />
             Perfil
           </button>
