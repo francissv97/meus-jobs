@@ -1,5 +1,6 @@
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { createContext, ReactNode, useEffect, useState } from "react";
+import { createNewUserDocumentInFirestore } from "../hooks/useFirestore";
 import { auth } from "../services/firebase";
 
 export interface User {
@@ -10,7 +11,7 @@ export interface User {
 }
 
 interface AuthContextType {
-  user: User | "OFF" | undefined;
+  user: User | null | undefined;
   signInWithGoogle: () => Promise<void>;
   logOut: () => Promise<void>;
 }
@@ -22,7 +23,7 @@ interface AuthContextProviderProps {
 export const AuthContext = createContext({} as AuthContextType);
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
-  const [user, setUser] = useState<User | "OFF" | undefined>();
+  const [user, setUser] = useState<User | null | undefined>(undefined);
 
   async function signInWithGoogle() {
     const provider = new GoogleAuthProvider();
@@ -34,6 +35,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       if (!displayName || !photoURL) {
         throw new Error("Missing information from Google account.");
       }
+      if (email) createNewUserDocumentInFirestore(email);
 
       setUser({
         id: uid,
@@ -47,7 +49,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   async function logOut() {
     try {
       await signOut(auth);
-      setUser("OFF");
+      setUser(null);
     } catch (error) {
       console.log(error);
     }
@@ -69,7 +71,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
           email: email,
         });
       } else {
-        setUser("OFF");
+        setUser(null);
       }
     });
 

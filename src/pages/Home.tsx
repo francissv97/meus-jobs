@@ -6,15 +6,10 @@ import { SignIn } from "./SignIn";
 export function Home() {
   const { user } = useAuth();
 
-  return (
-    <>
-      {user === undefined ? (
-        <Loading />
-      ) : user === "OFF" ? (
-        <SignIn />
-      ) : (
-        <Dashboard />
-      )}
-    </>
-  );
+  switch (typeof user === "undefined") {
+    case true:
+      return <Loading />;
+    case false:
+      return user ? <Dashboard /> : <SignIn />;
+  }
 }
