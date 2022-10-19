@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthContextProvider } from "./contexts/AuthContext";
 import { Home } from "./pages/Home";
 import { Toaster } from "react-hot-toast";
+import { Profile } from "./pages/Profile";
 
 export function App() {
   return (
@@ -9,7 +10,7 @@ export function App() {
       <AuthContextProvider>
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* <Route path="/profile" element={<Profile />} /> */}
+          <Route path="/profile" element={<Profile />} />
           {/* <Route path="/job/:id" element={<Job />} /> */}
         </Routes>
 
