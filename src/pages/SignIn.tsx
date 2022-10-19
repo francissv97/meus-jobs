@@ -1,8 +1,7 @@
 import { useAuth } from "../hooks/useAuth";
-import { Button } from "antd";
 import { Logo } from "../components/Logo";
 import { Footer } from "../components/Footer";
-import { GoogleLogo, GooglePhotosLogo } from "phosphor-react";
+import { GoogleLogo } from "phosphor-react";
 import bgOne from "../assets/backgroundOne.jpg";
 import bgTwo from "../assets/backgroundTwo.jpg";
 
