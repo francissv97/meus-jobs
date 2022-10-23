@@ -1,45 +1,79 @@
 import { PencilSimpleLine, TrashSimple } from "phosphor-react";
+import { Job, ProfileType } from "../types";
+import {
+  calculateJobDeadline,
+  calculateJobValue,
+  calculateUserValueHour,
+} from "../utils";
 
-interface Props {
-  name: string;
-  deadline: string;
-  value: number;
-  status: "IN-PROGRESS" | "CLOSED";
+interface JobCardProps extends Job {
+  profileData: ProfileType | undefined;
 }
 
-export function JobCard({ name, deadline, value, status }: Props) {
+export function JobCard(props: JobCardProps) {
+  const { title, dailyHours, totalHours, createdAt, profileData } = props;
+
+  const deadline = calculateJobDeadline(dailyHours, totalHours, createdAt);
+
+  const deadlineContent =
+    deadline > 1
+      ? `${deadline} dias para a entrega`
+      : deadline == 1
+      ? `${deadline} dia para a entrega`
+      : `Encerrado`;
+
+  const jobInProgress = deadline > 0;
+
+  const jobValue =
+    profileData &&
+    calculateJobValue(
+      totalHours,
+      calculateUserValueHour(
+        profileData.hoursPerDay,
+        profileData.daysPerWeek,
+        profileData.monthlyBudget,
+        profileData.vacationPerYear
+      )
+    );
+
   return (
     <div className="grid grid-cols-3 bg-zinc-100 gap-4 px-4 py-6 rounded shadow-xl">
       <div className="flex col-span-2 flex-col gap-2">
         <div id="JobName" className="flex items-center">
           <span className="text-zinc-700 text-xl font-medium whitespace-nowrap overflow-hidden text-ellipsis">
-            {name}
+            {title}
           </span>
         </div>
 
-        <div id="JobPrazo" className="flex flex-col">
-          <span className="text-sm text-zinc-500">Prazo</span>
-          <span className="text-zinc-700">{deadline}</span>
-        </div>
+        {deadline && (
+          <div id="JobPrazo" className="flex flex-col">
+            <span className="text-sm text-zinc-500">Prazo</span>
+            <span className="text-zinc-700">{deadlineContent}</span>
+          </div>
+        )}
 
         <div id="JobValor" className="flex flex-col justify-center">
           <span className="text-sm text-zinc-500">Valor</span>
           <span className="text-zinc-700">
-            {value.toLocaleString("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            })}
+            {jobValue &&
+              jobValue.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })}
           </span>
         </div>
       </div>
 
       <div className="flex flex-col justify-between">
         <div
-          id="JobStatus"
-          className="bg-red-300/20 text-red-700 px-2 py-1 text-sm text-center rounded w-fit self-end"
+          className={`${
+            jobInProgress
+              ? "bg-green-300/20 text-green-700"
+              : "bg-red-300/20 text-red-700 "
+          } px-2 py-1 text-sm text-center rounded w-fit self-end`}
         >
           <span className="whitespace-nowrap">
-            {status == "CLOSED" ? "ENCERRADO" : "EM ANDAMENTO"}
+            {jobInProgress ? "EM ANDAMENTO" : "ENCERRADO"}
           </span>
         </div>
 
