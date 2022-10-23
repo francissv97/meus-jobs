@@ -1,17 +1,34 @@
-export interface ProfileFieldValues {
+import { Timestamp } from "firebase/firestore";
+
+export interface UserAuth {
+  id: string;
+  name: string;
+  avatar: string;
+  email: string | null;
+}
+
+export interface UserFirestoreDocData {
+  profile: ProfileType;
+  jobs: Job[];
+}
+
+export interface ProfileType {
   daysPerWeek: number;
   hoursPerDay: number;
   monthlyBudget: number;
   vacationPerYear: number;
 }
-export interface Profile extends ProfileFieldValues {
-  valueHour: number;
+
+export interface AddNewJobFieldValues {
+  title: string;
+  dailyHours: number;
+  totalHours: number;
 }
 
 export interface Job {
-  id: number;
-  name: string;
+  id: string;
+  title: string;
   dailyHours: number;
   totalHours: number;
-  createdAt: number;
+  createdAt: Timestamp;
 }
