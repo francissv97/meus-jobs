@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../services/firebase";
 import toast from "react-hot-toast";
-import { Job, ProfileType, UserAuth, UserFirestoreDocData } from "../types";
+import { UserAuth, UserFirestoreDocData } from "../types";
 import { generateJobID } from "../utils";
 
 export async function getFirestoreDocumentSnapshot(userEmail: string) {
@@ -90,12 +90,4 @@ export async function addNewJob(
     console.error(error);
     toast.error("Erro ao tentar adicionar novo job.!");
   }
-}
-
-export async function removeJob(job: Job) {
-  const { id } = job;
-}
-
-export async function editJob(job: Job) {
-  const { id } = job;
 }

@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
 import { useAuth } from "../hooks/useAuth";
-import { Job, ProfileType, UserAuth, UserFirestoreDocData } from "../types";
-import toast from "react-hot-toast";
-import { Header } from "../components/Header";
-import { JobCard } from "../components/JobCard";
-import { Footer } from "../components/Footer";
-import { Spin } from "antd";
-import { CircleNotch, SmileyWink } from "phosphor-react";
 import {
   getFirestoreDocumentSnapshot,
   isFirstAccessUser,
 } from "../hooks/useFirestore";
+import toast from "react-hot-toast";
+import { Spin } from "antd";
+import { Job, ProfileType, UserAuth, UserFirestoreDocData } from "../types";
+import { Header } from "../components/Header";
+import { JobCard } from "../components/JobCard";
+import { Footer } from "../components/Footer";
+import { CircleNotch, SmileyWink } from "phosphor-react";
 
 export function Dashboard() {
   const { user } = useAuth();
@@ -26,8 +26,6 @@ export function Dashboard() {
     if (user?.email) {
       const filteredJobs = allJobs.filter((job) => job.id != jobId);
 
-      console.log(filteredJobs);
-
       const docRef = doc(db, "users", user.email);
 
       await updateDoc(docRef, {
@@ -37,35 +35,42 @@ export function Dashboard() {
   }
 
   useEffect(() => {
-    async function getUserDoc(user: UserAuth) {
-      try {
-        if (user.email) {
-          const docSnap = await getFirestoreDocumentSnapshot(user.email);
+    if (user?.email) {
+      async function getUserDoc(user: UserAuth) {
+        try {
+          if (user.email) {
+            const docSnap = await getFirestoreDocumentSnapshot(user.email);
 
-          if (docSnap.exists()) {
-            const docData = docSnap.data() as UserFirestoreDocData;
-            const docProfile = docData.profile;
-            const docJobs = docData.jobs;
+            if (docSnap.exists()) {
+              const docData = docSnap.data() as UserFirestoreDocData;
+              const docProfile = docData.profile;
 
-            setProfileData(docProfile);
-            setJobs(docJobs);
+              setProfileData(docProfile);
 
-            const isFirstAccess = await isFirstAccessUser(docSnap);
-            if (isFirstAccess) {
-              navigate("/profile");
-              toast(
-                "Primeiro acesso ao App. Por favor, preencha os dados do perfil para começar a adicionar jobs.",
-                { duration: 4000 }
-              );
+              const isFirstAccess = await isFirstAccessUser(docSnap);
+              if (isFirstAccess) {
+                navigate("/profile");
+                toast(
+                  "Primeiro acesso ao App. Por favor, preencha os dados do perfil para começar a adicionar jobs.",
+                  { duration: 4000 }
+                );
+              }
             }
           }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
       }
-    }
 
-    user && getUserDoc(user);
+      user && getUserDoc(user);
+
+      const unsub = onSnapshot(doc(db, "users", user.email), (doc) => {
+        const { jobs } = doc.data() as UserFirestoreDocData;
+        setJobs(jobs);
+      });
+
+      return unsub;
+    }
   }, []);
 
   return (
