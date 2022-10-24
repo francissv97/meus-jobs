@@ -14,6 +14,7 @@ import { Header } from "../components/Header";
 import { JobCard } from "../components/JobCard";
 import { Footer } from "../components/Footer";
 import { CircleNotch, SmileyWink } from "phosphor-react";
+import { calculateJobDeadline } from "../utils";
 
 export function Dashboard() {
   const { user } = useAuth();
@@ -21,6 +22,9 @@ export function Dashboard() {
 
   const [jobs, setJobs] = useState<Job[]>();
   const [profileData, setProfileData] = useState<ProfileType>();
+  const [jobsTotal, setJobsTotal] = useState(0);
+  const [jobsInProgress, setJobsInProgress] = useState(0);
+  const [jobsFinalizeds, setJobsFinalizeds] = useState(0);
 
   async function removeJob(jobId: string, allJobs: Job[]) {
     if (user?.email) {
@@ -33,6 +37,28 @@ export function Dashboard() {
       }).catch((error) => console.error(error));
     }
   }
+
+  async function calcNumbers(jobs: Job[]) {
+    if (jobs) {
+      jobs.forEach((j) => {
+        const deadline = calculateJobDeadline(
+          j.dailyHours,
+          j.totalHours,
+          j.createdAt
+        );
+
+        if (deadline > 0) {
+          const counter = jobsInProgress + 1;
+          setJobsInProgress(counter);
+        } else {
+          const counter = jobsFinalizeds + 1;
+          setJobsInProgress(counter);
+        }
+      });
+    }
+  }
+
+  // jobs && calcNumbers(jobs);
 
   useEffect(() => {
     if (user?.email) {
@@ -65,8 +91,11 @@ export function Dashboard() {
       user && getUserDoc(user);
 
       const unsub = onSnapshot(doc(db, "users", user.email), (doc) => {
-        const { jobs } = doc.data() as UserFirestoreDocData;
-        setJobs(jobs);
+        const data = doc.data() as UserFirestoreDocData;
+
+        setJobs(data.jobs);
+
+        setJobsTotal(data.jobs.length);
       });
 
       return unsub;
@@ -74,8 +103,12 @@ export function Dashboard() {
   }, []);
 
   return (
-    <div className="flex flex-col justify-between bg-gradient-to-t from-zinc-400 via-zinc-300 to-zinc-200 min-h-screen">
-      <Header />
+    <div className="flex flex-col bg-gradient-to-t from-zinc-400 via-zinc-300 to-zinc-200 min-h-screen">
+      <Header
+        totalJobs={jobsTotal}
+        inProgressJobs={jobsInProgress}
+        finalizedsJobs={jobsFinalizeds}
+      />
 
       <div className="flex flex-col gap-4 mt-4 max-w-4xl mx-auto -translate-y-12 w-full px-4">
         {!jobs ? (
@@ -104,7 +137,7 @@ export function Dashboard() {
         )}
       </div>
 
-      <Footer />
+      <Footer className="mt-auto" />
     </div>
   );
 }

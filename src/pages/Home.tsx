@@ -49,7 +49,7 @@ export function Home() {
             Continuar com o Google
           </button>
 
-          <Footer tailwindStyle="absolute bottom-2" />
+          <Footer className="absolute bottom-2" />
         </div>
       </div>
     );
