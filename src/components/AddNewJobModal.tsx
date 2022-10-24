@@ -39,6 +39,7 @@ export function AddNewJobModal({ open, closeModal }: Props) {
       onCancel={handleClose}
       title="Adicionar Novo Job"
       footer={null}
+      destroyOnClose
     >
       <Form
         form={form}
