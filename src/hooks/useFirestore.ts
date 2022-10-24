@@ -1,10 +1,38 @@
-import { doc, setDoc, Timestamp, getDoc, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  Timestamp,
+  getDoc,
+  updateDoc,
+  DocumentSnapshot,
+  DocumentData,
+} from "firebase/firestore";
 import { db } from "../services/firebase";
 import toast from "react-hot-toast";
 import { Job, ProfileType, UserAuth, UserFirestoreDocData } from "../types";
 import { generateJobID } from "../utils";
 
-// criar função: getDocumentSnapshot
+export async function getFirestoreDocumentSnapshot(userEmail: string) {
+  const docRef = doc(db, "users", userEmail);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap;
+}
+
+export async function isFirstAccessUser(
+  docSnap: DocumentSnapshot<DocumentData>
+) {
+  if (docSnap.exists()) {
+    const docData = docSnap.data() as UserFirestoreDocData;
+    const docProfile = docData.profile;
+
+    if (Object.keys(docProfile).length == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
 
 export async function createNewUserDocumentInFirestore(userEmail: string) {
   try {

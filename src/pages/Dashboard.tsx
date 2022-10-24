@@ -9,7 +9,8 @@ import { Header } from "../components/Header";
 import { JobCard } from "../components/JobCard";
 import { Footer } from "../components/Footer";
 import { Spin } from "antd";
-import { CircleNotch } from "phosphor-react";
+import { CircleNotch, SmileyWink } from "phosphor-react";
+import { getFirestoreDocumentSnapshot } from "../hooks/useFirestore";
 
 export function Dashboard() {
   const { user } = useAuth();
@@ -22,8 +23,7 @@ export function Dashboard() {
     async function getUserDoc(user: UserAuth) {
       try {
         if (user.email) {
-          const docRef = doc(db, "users", user.email);
-          const docSnap = await getDoc(docRef);
+          const docSnap = await getFirestoreDocumentSnapshot(user.email);
 
           if (docSnap.exists()) {
             const docData = docSnap.data() as UserFirestoreDocData;
@@ -33,18 +33,16 @@ export function Dashboard() {
             setProfileData(docProfile);
             setJobs(docJobs);
 
-            const profileNotValues =
-              !docProfile.daysPerWeek ||
-              !docProfile.hoursPerDay ||
-              !docProfile.monthlyBudget ||
-              !docProfile.vacationPerYear;
+            const profileNotValues = Object.keys(docProfile).length == 0;
 
-            if (!docProfile || profileNotValues) navigate("/profile");
+            console.log(profileNotValues);
+
+            if (profileNotValues) return navigate("/profile");
           }
         }
       } catch (error) {
         console.log(error);
-        toast.error("Erro ao tentar adicionar novo job..!");
+        // toast.error("Erro ao tentar adicionar novo job..!");
       }
     }
 
@@ -74,8 +72,9 @@ export function Dashboard() {
             />
           ))
         ) : (
-          <strong className="text-zinc-600 text-2xl font-normal">
-            Nenhum job registrado por enquanto.
+          <strong className="text-zinc-600 text-2xl font-normal flex items-center gap-2">
+            <SmileyWink size={42} weight="light" className="text-orange-500" />
+            Nenhum job registrado por enquanto
           </strong>
         )}
       </div>
