@@ -45,6 +45,10 @@ export async function createNewUserDocumentInFirestore(userEmail: string) {
           profile: {},
           jobs: [],
         });
+
+        return "firstAccess";
+      } else {
+        return "normalAccess";
       }
     }
   } catch (error) {

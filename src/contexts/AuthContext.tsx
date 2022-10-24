@@ -3,6 +3,7 @@ import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { createNewUserDocumentInFirestore } from "../hooks/useFirestore";
 import { auth } from "../services/firebase";
 import { UserAuth } from "../types";
+import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
   user: UserAuth | null | undefined;
@@ -18,6 +19,7 @@ export const AuthContext = createContext({} as AuthContextType);
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<UserAuth | null | undefined>(undefined);
+  const navigate = useNavigate();
 
   async function signInWithGoogle() {
     const provider = new GoogleAuthProvider();
@@ -30,14 +32,18 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         throw new Error("Missing information from Google account.");
       }
 
-      if (email) createNewUserDocumentInFirestore(email);
-
       setUser({
         id: uid,
         name: displayName,
         avatar: photoURL,
         email: email,
       });
+
+      const firstAcess =
+        email && (await createNewUserDocumentInFirestore(email));
+      if (firstAcess == "firstAccess") {
+        navigate("/profile");
+      }
     }
   }
 

@@ -15,9 +15,7 @@ export function Home() {
     return <Loading />;
   }
 
-  if (user) {
-    return <Dashboard />;
-  } else {
+  if (!user) {
     return (
       <div className="flex">
         <div className="w-0 sm:w-1/4 md:w-2/4 lg:3/4 min-h-screen relative">
@@ -55,5 +53,7 @@ export function Home() {
         </div>
       </div>
     );
+  } else {
+    return <Dashboard />;
   }
 }

@@ -10,7 +10,10 @@ import { JobCard } from "../components/JobCard";
 import { Footer } from "../components/Footer";
 import { Spin } from "antd";
 import { CircleNotch, SmileyWink } from "phosphor-react";
-import { getFirestoreDocumentSnapshot } from "../hooks/useFirestore";
+import {
+  getFirestoreDocumentSnapshot,
+  isFirstAccessUser,
+} from "../hooks/useFirestore";
 
 export function Dashboard() {
   const { user } = useAuth();
@@ -33,16 +36,18 @@ export function Dashboard() {
             setProfileData(docProfile);
             setJobs(docJobs);
 
-            const profileNotValues = Object.keys(docProfile).length == 0;
-
-            console.log(profileNotValues);
-
-            if (profileNotValues) return navigate("/profile");
+            const isFirstAccess = await isFirstAccessUser(docSnap);
+            if (isFirstAccess) {
+              navigate("/profile");
+              toast(
+                "Primeiro acesso ao App. Por favor, preencha os dados do perfil para começar a adicionar jobs.",
+                { duration: 4000 }
+              );
+            }
           }
         }
       } catch (error) {
         console.log(error);
-        // toast.error("Erro ao tentar adicionar novo job..!");
       }
     }
 
