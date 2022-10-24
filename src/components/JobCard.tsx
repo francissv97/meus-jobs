@@ -1,17 +1,48 @@
-import { PencilSimpleLine, TrashSimple } from "phosphor-react";
 import { Job, ProfileType } from "../types";
 import {
   calculateJobDeadline,
   calculateJobValue,
   calculateUserValueHour,
 } from "../utils";
+import { Modal } from "antd";
+import { PencilSimpleLine, TrashSimple } from "phosphor-react";
 
 interface JobCardProps extends Job {
   profileData: ProfileType | undefined;
+  onClickRemoveJob: () => void;
 }
 
 export function JobCard(props: JobCardProps) {
-  const { title, dailyHours, totalHours, createdAt, profileData } = props;
+  const {
+    title,
+    dailyHours,
+    totalHours,
+    createdAt,
+    profileData,
+    onClickRemoveJob,
+  } = props;
+
+  const { confirm } = Modal;
+  const showConfirm = () => {
+    confirm({
+      content: (
+        <>
+          <strong className="font-normal text-zinc-600 text-xl">
+            Excluir job?
+          </strong>
+
+          <p className="text-lg text-zinc-600 mt-4">
+            O job <span className="text-red-600 text-xl">{title}</span> será
+            apagado permanentemente.
+          </p>
+        </>
+      ),
+      cancelText: "Cancelar",
+      okText: "EXCLUIR",
+      okType: "danger",
+      onOk: onClickRemoveJob,
+    });
+  };
 
   const deadline = calculateJobDeadline(dailyHours, totalHours, createdAt);
 
@@ -78,15 +109,15 @@ export function JobCard(props: JobCardProps) {
         </div>
 
         <div id="JobHomeComponentButtons" className="flex justify-end gap-2">
-          <button
-            id="JobEdit"
+          {/* <button
+            onClick={() => console.log("editar: ", id)}
             className="flex items-center justify-center bg-zinc-500 text-white py-1 px-2 rounded transition hover:bg-zinc-400"
           >
             <PencilSimpleLine size={26} />
-          </button>
+          </button> */}
 
           <button
-            id="JobRemove"
+            onClick={showConfirm}
             className="flex items-center justify-center bg-red-700 text-white py-1 px-2 rounded transition hover:bg-red-600"
           >
             <TrashSimple size={26} />

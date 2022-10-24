@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
 import { useAuth } from "../hooks/useAuth";
 import { Job, ProfileType, UserAuth, UserFirestoreDocData } from "../types";
@@ -21,6 +21,20 @@ export function Dashboard() {
 
   const [jobs, setJobs] = useState<Job[]>();
   const [profileData, setProfileData] = useState<ProfileType>();
+
+  async function removeJob(jobId: string, allJobs: Job[]) {
+    if (user?.email) {
+      const filteredJobs = allJobs.filter((job) => job.id != jobId);
+
+      console.log(filteredJobs);
+
+      const docRef = doc(db, "users", user.email);
+
+      await updateDoc(docRef, {
+        jobs: filteredJobs,
+      }).catch((error) => console.error(error));
+    }
+  }
 
   useEffect(() => {
     async function getUserDoc(user: UserAuth) {
@@ -74,6 +88,7 @@ export function Dashboard() {
               totalHours={job.totalHours}
               createdAt={job.createdAt}
               profileData={profileData}
+              onClickRemoveJob={() => removeJob(job.id, jobs)}
             />
           ))
         ) : (
