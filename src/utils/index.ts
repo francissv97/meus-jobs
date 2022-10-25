@@ -67,3 +67,19 @@ export function calculateJobsNumbers(jobs: Job[]): {
 
   return { inProgress, closeds };
 }
+
+export function calculateFreeTimeDay(profileHoursPerDay: number, jobs: Job[]) {
+  const jobsMap = jobs.map((job) => {
+    const deadline = calculateJobDeadline(
+      job.dailyHours,
+      job.totalHours,
+      job.createdAt
+    );
+
+    return deadline > 0 ? job.dailyHours : 0;
+  });
+
+  const hoursPerDayAllJobs = jobsMap.reduce((acc, curr) => acc + curr);
+
+  return profileHoursPerDay - hoursPerDayAllJobs;
+}
