@@ -75,15 +75,19 @@ export function Header({ jobs, profileHoursPerDay }: Props) {
               <strong className="font-normal text-2xl text-zinc-100">
                 {numbers?.closeds}
               </strong>
-              Encerrados
+              {numbers && numbers.closeds > 1 ? "Encerrados" : "Encerrado"}
             </p>
           </div>
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-1 bg-orange-500 text-zinc-100 text-base sm:text-lg p-2 h-fit my-auto rounded ml-auto"
+            className="group flex items-center gap-1 bg-orange-500 hover:bg-orange-600 transition text-zinc-100 text-base sm:text-lg p-2 h-fit my-auto rounded ml-auto shadow-zinc-800 shadow-lg"
           >
-            <Plus size={22} />
+            <Plus
+              size={22}
+              weight="bold"
+              className="group group-hover:rotate-90 duration-300"
+            />
             Adicionar job
           </button>
         </div>
