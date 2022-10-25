@@ -5,7 +5,7 @@ export function SimpleHeader() {
   const navigate = useNavigate();
 
   return (
-    <div className=" bg-zinc-600">
+    <div className="bg-gradient-to-tr from-zinc-700 via-zinc-600 to-zinc-500">
       <div className="flex items-center justify-between gap-4 max-w-4xl mx-auto p-4">
         <div
           onClick={() => navigate(-1)}
