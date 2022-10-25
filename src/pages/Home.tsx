@@ -28,7 +28,7 @@ export function Home() {
           <div className="bg-orange-500/20 absolute w-full h-full inset-0"></div>
         </div>
 
-        <div className="flex flex-1 flex-col gap-6 bg-gradient-to-t from-zinc-400 via-zinc-200 to-zinc-100 justify-center items-center px-2 relative">
+        <div className="flex flex-1 flex-col gap-6 bg-gradient-to-t from-zinc-500 via-zinc-200 to-zinc-200 justify-center items-center px-2 relative">
           <Logo />
 
           <div className="flex flex-col">
