@@ -41,6 +41,8 @@ export function Profile() {
               vacationPerYear
             )
           );
+        } else {
+          setIsFormDisabled(false);
         }
       }
     }
@@ -90,53 +92,32 @@ export function Profile() {
   getProfileData();
 
   return (
-    <div className="bg-gradient-to-t from-zinc-400 via-zinc-300 to-zinc-200 min-h-screen">
+    <div className="bg-gradient-to-t from-zinc-500 via-zinc-200 to-zinc-200 min-h-screen">
       <SimpleHeader />
 
-      <div className="flex gap-2 max-w-4xl p-4 mx-auto mt-6">
-        <div className="flex flex-col gap-4 justify-center items-center bg-zinc-100 shadow-xl w-40 md:w-64 rounded p-4 h-fit">
-          <img
-            src={user?.avatar}
-            alt="Profile photo"
-            className="w-36 rounded-full"
-            referrerPolicy="no-referrer"
-          />
+      <div className="flex flex-col md:flex-row gap-4 max-w-4xl p-4 mx-auto mt-6">
+        <div className="flex md:flex-col gap-4 justify-center md:justify-start items-center flex-wrap">
+          <div className="flex flex-col justify-center items-center gap-2 bg-zinc-100 shadow-xl rounded p-4">
+            <img
+              src={user?.avatar}
+              alt="Profile photo"
+              className="max-w-[-9rem] rounded-full"
+              referrerPolicy="no-referrer"
+            />
 
-          <span className="text-lg md:text-xl font-normal">{user?.name}</span>
+            <span className="text-lg md:text-xl font-normal">{user?.name}</span>
+          </div>
 
           {valueHour && (
-            <>
-              <Divider className="my-2" />
-              <div className="flex flex-col items-center">
-                <span className="text-base text-zinc-600">Valor hora</span>
-                <strong className="font-medium text-xl text-zinc-700">
-                  {valueHour.toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })}
-                </strong>
-              </div>
-            </>
-          )}
-
-          <Divider className="my-2" />
-
-          {isFormDisabled ? (
-            <button
-              onClick={() => setIsFormDisabled(false)}
-              className="flex items-center gap-1 bg-sky-600 rounded w-full text-xl justify-center p-2 mb-2 self-center text-zinc-100 transition hover:bg-sky-700"
-            >
-              <PencilSimpleLine size={22} />
-              Editar
-            </button>
-          ) : (
-            <button
-              onClick={() => form.submit()}
-              className="flex items-center justify-center gap-1 w-full text-xl p-2 rounded border-2 border-transparent text-zinc-100 bg-green-600 hover:bg-zinc-100 hover:border-green-600 hover:text-green-600 disabled:bg-zinc-400 disabled:cursor-not-allowed disabled:hover:border-transparent disabled:hover:text-zinc-100 transition"
-            >
-              <FloppyDisk size={30} />
-              Salvar
-            </button>
+            <div className="flex flex-col items-center bg-zinc-100 shadow-xl rounded p-4 self-end md:self-center">
+              <span className="text-base text-zinc-600">Valor hora</span>
+              <strong className="font-normal text-2xl text-green-800">
+                {valueHour.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
+              </strong>
+            </div>
           )}
         </div>
 
@@ -204,6 +185,24 @@ export function Profile() {
               <InputNumber type="number" size="large" min={0} max={48} />
             </Form.Item>
           </Form>
+
+          {isFormDisabled ? (
+            <button
+              onClick={() => setIsFormDisabled(false)}
+              className="flex items-center gap-1 bg-sky-600 rounded w-full text-xl justify-center p-2 mb-2 self-center text-zinc-100 transition hover:bg-sky-700"
+            >
+              <PencilSimpleLine size={22} />
+              Editar
+            </button>
+          ) : (
+            <button
+              onClick={() => form.submit()}
+              className="flex items-center justify-center gap-1 w-full text-xl p-2 rounded border-2 border-transparent text-zinc-100 bg-green-600 hover:bg-zinc-100 hover:border-green-600 hover:text-green-600 disabled:bg-zinc-400 disabled:cursor-not-allowed disabled:hover:border-transparent disabled:hover:text-zinc-100 transition"
+            >
+              <FloppyDisk size={30} />
+              Salvar
+            </button>
+          )}
         </div>
       </div>
     </div>
