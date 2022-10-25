@@ -1,4 +1,5 @@
 import { Timestamp } from "firebase/firestore";
+import { Job } from "../types";
 
 export function generateJobID() {
   return Math.floor(Date.now() * Math.random()).toString(36);
@@ -42,4 +43,27 @@ export function calculateJobDeadline(
   );
 
   return daysDifference;
+}
+
+export function calculateJobsNumbers(jobs: Job[]): {
+  inProgress: number;
+  closeds: number;
+} {
+  const jobsMap = jobs?.map((job) => {
+    const deadline = calculateJobDeadline(
+      job.dailyHours,
+      job.totalHours,
+      job.createdAt
+    );
+
+    return deadline > 0 ? 1 : 0;
+  });
+
+  const jobsInProgressArray = jobsMap?.filter((f) => f == 1);
+  const jobsClosedsArray = jobsMap?.filter((f) => f == 0);
+
+  const inProgress = jobsInProgressArray.length;
+  const closeds = jobsClosedsArray.length;
+
+  return { inProgress, closeds };
 }
