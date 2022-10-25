@@ -76,9 +76,7 @@ export function Dashboard() {
 
   return (
     <div className="flex flex-col bg-gradient-to-t from-zinc-400 via-zinc-300 to-zinc-200 min-h-screen">
-      <Header
-        jobs={jobs}
-      />
+      <Header jobs={jobs} profileHoursPerDay={profileData?.hoursPerDay} />
 
       <div className="flex flex-col gap-4 mt-4 max-w-4xl mx-auto -translate-y-12 w-full px-4">
         {!jobs ? (
