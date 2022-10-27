@@ -69,17 +69,21 @@ export function calculateJobsNumbers(jobs: Job[]): {
 }
 
 export function calculateFreeTimeDay(profileHoursPerDay: number, jobs: Job[]) {
-  const jobsMap = jobs.map((job) => {
-    const deadline = calculateJobDeadline(
-      job.dailyHours,
-      job.totalHours,
-      job.createdAt
-    );
+  if (jobs.length == 0) {
+    return profileHoursPerDay;
+  } else {
+    const jobsMap = jobs.map((job) => {
+      const deadline = calculateJobDeadline(
+        job.dailyHours,
+        job.totalHours,
+        job.createdAt
+      );
 
-    return deadline > 0 ? job.dailyHours : 0;
-  });
+      return deadline > 0 ? job.dailyHours : 0;
+    });
 
-  const hoursPerDayAllJobs = jobsMap.reduce((acc, curr) => acc + curr);
+    const hoursPerDayAllJobs = jobsMap.reduce((acc, curr) => acc + curr);
 
-  return profileHoursPerDay - hoursPerDayAllJobs;
+    return profileHoursPerDay - hoursPerDayAllJobs;
+  }
 }

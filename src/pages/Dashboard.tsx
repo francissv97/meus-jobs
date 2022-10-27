@@ -22,6 +22,18 @@ export function Dashboard() {
   const [jobs, setJobs] = useState<Job[]>();
   const [profileData, setProfileData] = useState<ProfileType>();
 
+  // async function editJob(jobId: string, allJobs: Job[]) {
+  //   if (user?.email) {
+  //     const filteredJobs = allJobs.filter((job) => job.id != jobId);
+
+  //     const docRef = doc(db, "users", user.email);
+
+  //     await updateDoc(docRef, {
+  //       jobs: filteredJobs,
+  //     }).catch((error) => console.error(error));
+  //   }
+  // }
+
   async function removeJob(jobId: string, allJobs: Job[]) {
     if (user?.email) {
       const filteredJobs = allJobs.filter((job) => job.id != jobId);
@@ -49,11 +61,11 @@ export function Dashboard() {
 
               const isFirstAccess = await isFirstAccessUser(docSnap);
               if (isFirstAccess) {
-                navigate("/profile");
                 toast(
                   "Primeiro acesso ao App. Por favor, preencha os dados do perfil para começar a adicionar jobs.",
                   { duration: 4000 }
                 );
+                return navigate("/profile");
               }
             }
           }
@@ -98,7 +110,7 @@ export function Dashboard() {
             />
           ))
         ) : (
-          <strong className="text-zinc-600 text-2xl font-normal flex items-center gap-2">
+          <strong className="text-zinc-600 text-2xl font-normal flex items-center gap-2 mt-16">
             <SmileyWink size={42} weight="light" className="text-orange-500" />
             Nenhum job registrado por enquanto
           </strong>

@@ -8,7 +8,7 @@ export function SimpleHeader() {
     <div className="bg-gradient-to-tr from-zinc-700 via-zinc-600 to-zinc-500">
       <div className="flex items-center justify-between gap-4 max-w-4xl mx-auto p-4">
         <div
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/")}
           className="group p-2 pl-0 cursor-pointer"
         >
           <ArrowUUpLeft

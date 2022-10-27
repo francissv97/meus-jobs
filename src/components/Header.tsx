@@ -25,7 +25,7 @@ export function Header({ jobs, profileHoursPerDay }: Props) {
   const { user } = useAuth();
 
   const handleModalClose = () => setIsModalOpen(false);
-
+  
   return (
     <div className="bg-gradient-to-t from-zinc-700 via-zinc-600 to-zinc-600 pt-4 pb-16">
       <div className="flex flex-col justify-between max-w-4xl mx-auto">
@@ -35,21 +35,25 @@ export function Header({ jobs, profileHoursPerDay }: Props) {
           {user && <UserInfo name={user.name} avatar={user.avatar} />}
         </div>
 
-        <div className="px-4">
-          <Divider style={{ borderColor: "#71717a" }}>
-            {!freeTimeDay ? (
-              <CircleNotch className="text-zinc-500 animate-spin" size={32} />
-            ) : freeTimeDay > 1 ? (
-              <p className="text-sm sm:text-base text-emerald-500 font-normal">{`${freeTimeDay} horas livres ao dia`}</p>
-            ) : freeTimeDay == 1 ? (
-              <p className="text-sm sm:text-base text-amber-500 font-normal">{`${freeTimeDay} hora livre ao dia`}</p>
-            ) : (
-              <p className="text-sm sm:text-base text-red-500 font-normal">
-                Sem horas livres ao dia
-              </p>
-            )}
-          </Divider>
-        </div>
+        {typeof freeTimeDay == "undefined" ? (
+          <CircleNotch className="animate-spin text-orange-500" size={32} />
+        ) : (
+          <div className="px-4">
+            <Divider style={{ borderColor: "#71717a" }}>
+              {freeTimeDay > 1 ? (
+                <p className="text-sm sm:text-base text-emerald-500 font-normal">{`${freeTimeDay} horas livres ao dia`}</p>
+              ) : freeTimeDay == 1 ? (
+                <p className="text-sm sm:text-base text-amber-500 font-normal">{`${freeTimeDay} hora livre ao dia`}</p>
+              ) : freeTimeDay < 1 ? (
+                <p className="text-sm sm:text-base text-red-500 font-normal">
+                  Sem horas livres ao dia
+                </p>
+              ) : (
+                <CircleNotch className="text-zinc-500 animate-spin" size={32} />
+              )}
+            </Divider>
+          </div>
+        )}
 
         <div className="flex justify-between gap-x-2 gap-y-4 flex-wrap px-4">
           <div className="flex">
@@ -81,7 +85,7 @@ export function Header({ jobs, profileHoursPerDay }: Props) {
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="group flex items-center gap-1 bg-orange-500 hover:bg-orange-600 transition text-zinc-100 text-base sm:text-lg p-2 h-fit my-auto rounded ml-auto shadow-zinc-800 shadow-lg"
+            className="group flex items-center gap-1 bg-orange-500 hover:bg-orange-600 transition text-zinc-100 text-base sm:text-lg p-2 h-fit my-auto rounded ml-auto shadow-zinc-800 shadow-md"
           >
             <Plus
               size={22}

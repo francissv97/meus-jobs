@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
 import { Divider, Form, InputNumber } from "antd";
@@ -7,46 +7,20 @@ import { useAuth } from "../hooks/useAuth";
 import { ProfileType, UserFirestoreDocData } from "../types";
 import { SimpleHeader } from "../components/SimpleHeader";
 import { calculateUserValueHour } from "../utils";
-import { FloppyDisk, PencilSimpleLine } from "phosphor-react";
+import {
+  FloppyDisk,
+  PencilSimpleLine,
+} from "phosphor-react";
+import { useNavigate } from "react-router-dom";
 
 export function Profile() {
   const { user } = useAuth();
+  const navigate = useNavigate();
+
   const [form] = Form.useForm();
   const [isFormDisabled, setIsFormDisabled] = useState(true);
   const [valueHour, setValueHour] = useState<number>();
-
-  async function getProfileData() {
-    if (user?.email) {
-      const docRef = doc(db, "users", user.email);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const { profile } = docSnap.data() as UserFirestoreDocData;
-        const { hoursPerDay, daysPerWeek, monthlyBudget, vacationPerYear } =
-          profile;
-
-        if (daysPerWeek && hoursPerDay && monthlyBudget && vacationPerYear) {
-          form.setFieldsValue({
-            monthlyBudget: profile.monthlyBudget,
-            hoursPerDay: profile.hoursPerDay,
-            daysPerWeek: profile.daysPerWeek,
-            vacationPerYear: profile.vacationPerYear,
-          });
-
-          setValueHour(
-            calculateUserValueHour(
-              hoursPerDay,
-              daysPerWeek,
-              monthlyBudget,
-              vacationPerYear
-            )
-          );
-        } else {
-          setIsFormDisabled(false);
-        }
-      }
-    }
-  }
+  const [profileState, setProfileState] = useState<ProfileType | null>();
 
   async function handleProfileForm() {
     const { hoursPerDay, daysPerWeek, monthlyBudget, vacationPerYear } =
@@ -74,22 +48,65 @@ export function Profile() {
   async function handleProfileSubmitFirestore(profileValues: ProfileType) {
     if (user?.email) {
       const docRef = doc(db, "users", user.email);
-      const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        try {
-          await updateDoc(docRef, { profile: profileValues }).then(() =>
-            toast.success("Valores atualizados.!")
-          );
-        } catch (error) {
-          console.error(error);
-          toast.error("Erro ao tentar atualizar valores do perfil.");
-        }
+      try {
+        await updateDoc(docRef, { profile: profileValues }).then(() =>
+          toast.success("Valores atualizados.!")
+        );
+      } catch (error) {
+        console.error(error);
+        toast.error("Erro ao tentar atualizar valores do perfil.");
       }
     }
   }
 
-  getProfileData();
+  useEffect(() => {
+    async function getProfileData() {
+      if (user?.email) {
+        const docRef = doc(db, "users", user.email);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const { profile } = docSnap.data() as UserFirestoreDocData;
+          const { hoursPerDay, daysPerWeek, monthlyBudget, vacationPerYear } =
+            profile;
+
+          const validateProfileValues = Boolean(
+            daysPerWeek && hoursPerDay && monthlyBudget && vacationPerYear
+          );
+
+          if (validateProfileValues) {
+            setProfileState({
+              monthlyBudget,
+              hoursPerDay,
+              daysPerWeek,
+              vacationPerYear,
+            });
+
+            form.setFieldsValue({
+              monthlyBudget: monthlyBudget,
+              hoursPerDay: hoursPerDay,
+              daysPerWeek: daysPerWeek,
+              vacationPerYear: vacationPerYear,
+            });
+
+            setValueHour(
+              calculateUserValueHour(
+                hoursPerDay,
+                daysPerWeek,
+                monthlyBudget,
+                vacationPerYear
+              )
+            );
+          } else {
+            setIsFormDisabled(false);
+          }
+        }
+      }
+    }
+
+    getProfileData();
+  }, []);
 
   return (
     <div className="bg-gradient-to-t from-zinc-500 via-zinc-200 to-zinc-200 min-h-screen">
@@ -122,69 +139,202 @@ export function Profile() {
         </div>
 
         <div className="flex-1 flex flex-col px-4 pt-0 pb-4">
-          <Form
-            form={form}
-            layout="vertical"
-            onFinish={handleProfileForm}
-            autoComplete="off"
-            disabled={isFormDisabled}
-          >
-            <Form.Item
-              name="monthlyBudget"
-              label="Quanto quero ganhar por mês?"
-              rules={[{ required: true, message: "Este campo é obrigatório." }]}
+          {!profileState ? (
+            <Form
+              form={form}
+              layout="vertical"
+              onFinish={handleProfileForm}
+              autoComplete="off"
+              disabled={isFormDisabled}
             >
-              <InputNumber
-                prefix="R$"
-                size="large"
-                type="number"
-                min={0}
-                className="w-36"
-              />
-            </Form.Item>
+              <Form.Item
+                name="monthlyBudget"
+                label={
+                  <p className="text-base">Quanto quero ganhar por mês?</p>
+                }
+                rules={[
+                  { required: true, message: "Este campo é obrigatório." },
+                ]}
+              >
+                <InputNumber
+                  prefix="R$"
+                  type="number"
+                  size="large"
+                  min={0}
+                  className="w-36 text-xl"
+                />
+              </Form.Item>
 
-            <Form.Item
-              name="hoursPerDay"
-              label="Quantas horas quero trabalhar por dia?"
-              rules={[
-                { required: true, message: "Este campo é obrigatório." },
-                {
-                  type: "integer",
-                  message: "Valores decimais não são permitidos.",
-                },
-              ]}
-            >
-              <InputNumber size="large" type="number" min={0} max={24} />
-            </Form.Item>
+              <Form.Item
+                name="hoursPerDay"
+                label={
+                  <p className="text-base">
+                    Quantas horas quero trabalhar por dia?
+                  </p>
+                }
+                rules={[
+                  { required: true, message: "Este campo é obrigatório." },
+                  {
+                    type: "integer",
+                    message: "Valores decimais não são permitidos.",
+                  },
+                ]}
+              >
+                <InputNumber
+                  size="large"
+                  type="number"
+                  min={0}
+                  max={24}
+                  className="w-36 text-xl"
+                />
+              </Form.Item>
 
-            <Form.Item
-              name="daysPerWeek"
-              label="Quantos dias quero trabalhar por semana?"
-              rules={[
-                { required: true, message: "Este campo é obrigatório." },
-                {
-                  type: "integer",
-                  message: "Valores decimais não são permitidos.",
-                },
-              ]}
-            >
-              <InputNumber type="number" size="large" min={0} max={7} />
-            </Form.Item>
+              <Form.Item
+                name="daysPerWeek"
+                label={
+                  <p className="text-base">
+                    Quantos dias quero trabalhar por semana?
+                  </p>
+                }
+                rules={[
+                  { required: true, message: "Este campo é obrigatório." },
+                  {
+                    type: "integer",
+                    message: "Valores decimais não são permitidos.",
+                  },
+                ]}
+              >
+                <InputNumber
+                  type="number"
+                  size="large"
+                  min={0}
+                  max={7}
+                  className="w-36 text-xl"
+                />
+              </Form.Item>
 
-            <Form.Item
-              name="vacationPerYear"
-              label="Quantas semanas por ano vocẽ quer tirar de férias?"
-              rules={[
-                { required: true, message: "Este campo é obrigatório." },
-                {
-                  type: "integer",
-                  message: "Valores decimais não são permitidos.",
-                },
-              ]}
+              <Form.Item
+                name="vacationPerYear"
+                label={
+                  <p className="text-base">
+                    Quantas semanas por ano vocẽ quer tirar de férias?
+                  </p>
+                }
+                rules={[
+                  { required: true, message: "Este campo é obrigatório." },
+                  {
+                    type: "integer",
+                    message: "Valores decimais não são permitidos.",
+                  },
+                ]}
+              >
+                <InputNumber
+                  type="number"
+                  size="large"
+                  min={0}
+                  max={48}
+                  className="w-36 text-xl"
+                />
+              </Form.Item>
+            </Form>
+          ) : (
+            <Form
+              form={form}
+              layout="vertical"
+              onFinish={handleProfileForm}
+              disabled={isFormDisabled}
             >
-              <InputNumber type="number" size="large" min={0} max={48} />
-            </Form.Item>
-          </Form>
+              <Form.Item
+                name="monthlyBudget"
+                label={
+                  <p className="text-base">Quanto quero ganhar por mês?</p>
+                }
+                rules={[
+                  { required: true, message: "Este campo é obrigatório." },
+                ]}
+              >
+                <InputNumber
+                  prefix="R$"
+                  size="large"
+                  type="number"
+                  min={0}
+                  className="w-36 text-xl"
+                />
+              </Form.Item>
+
+              <Form.Item
+                name="hoursPerDay"
+                label={
+                  <p className="text-base">
+                    Quantas horas quero trabalhar por dia?
+                  </p>
+                }
+                rules={[
+                  { required: true, message: "Este campo é obrigatório." },
+                  {
+                    type: "integer",
+                    message: "Valores decimais não são permitidos.",
+                  },
+                ]}
+              >
+                <InputNumber
+                  size="large"
+                  type="number"
+                  min={0}
+                  max={24}
+                  className="w-36 text-xl"
+                />
+              </Form.Item>
+
+              <Form.Item
+                name="daysPerWeek"
+                label={
+                  <p className="text-base">
+                    Quantos dias quero trabalhar por semana?
+                  </p>
+                }
+                rules={[
+                  { required: true, message: "Este campo é obrigatório." },
+                  {
+                    type: "integer",
+                    message: "Valores decimais não são permitidos.",
+                  },
+                ]}
+              >
+                <InputNumber
+                  type="number"
+                  size="large"
+                  min={0}
+                  max={7}
+                  className="w-36 text-xl"
+                />
+              </Form.Item>
+
+              <Form.Item
+                name="vacationPerYear"
+                label={
+                  <p className="text-base">
+                    Quantas semanas por ano vocẽ quer tirar de férias?
+                  </p>
+                }
+                rules={[
+                  { required: true, message: "Este campo é obrigatório." },
+                  {
+                    type: "integer",
+                    message: "Valores decimais não são permitidos.",
+                  },
+                ]}
+              >
+                <InputNumber
+                  type="number"
+                  size="large"
+                  min={0}
+                  max={48}
+                  className="w-36 text-xl"
+                />
+              </Form.Item>
+            </Form>
+          )}
 
           {isFormDisabled ? (
             <button

@@ -1,29 +1,36 @@
+import { useState } from "react";
+import { Modal } from "antd";
 import { Job, ProfileType } from "../types";
 import {
   calculateJobDeadline,
   calculateJobValue,
   calculateUserValueHour,
 } from "../utils";
-import { Modal } from "antd";
+import { EditJobModal } from "./EditJobModal";
 import { PencilSimpleLine, TrashSimple } from "phosphor-react";
 
 interface JobCardProps extends Job {
   profileData: ProfileType | undefined;
   onClickRemoveJob: () => void;
+  // onClickEditJob: () => void;
 }
 
-export function JobCard(props: JobCardProps) {
-  const {
-    title,
-    dailyHours,
-    totalHours,
-    createdAt,
-    profileData,
-    onClickRemoveJob,
-  } = props;
+export function JobCard({
+  id,
+  title,
+  dailyHours,
+  totalHours,
+  createdAt,
+  profileData,
+  onClickRemoveJob,
+}: JobCardProps) {
+  const [isEditJobModalOpen, setIsEditJobModalOpen] = useState(false);
 
   const { confirm } = Modal;
-  const showConfirm = () => {
+
+  const handleEditJobModalClose = () => setIsEditJobModalOpen(false);
+
+  const showConfirmDeleteJob = () => {
     confirm({
       content: (
         <>
@@ -44,13 +51,30 @@ export function JobCard(props: JobCardProps) {
     });
   };
 
+  // const showConfirmEditJob = () => {
+  //   confirm({
+  //     content: (
+  //       <>
+  //         <strong className="font-normal text-zinc-600 text-xl">
+  //           Editar job
+  //         </strong>
+
+  //       </>
+  //     ),
+  //     icon: <PencilSimpleLine size={32} />,
+  //     cancelText: "Cancelar",
+  //     okText: "EXCLUIR",
+  //     okType: "danger",
+  //   });
+  // };
+
   const deadline = calculateJobDeadline(dailyHours, totalHours, createdAt);
 
   const deadlineContent =
-    deadline > 1
-      ? `${deadline} dias para a entrega`
-      : deadline == 1
+    deadline === 1
       ? `${deadline} dia para a entrega`
+      : deadline > 1
+      ? `${deadline} dias para a entrega`
       : `Encerrado`;
 
   const jobInProgress = deadline > 0;
@@ -76,10 +100,15 @@ export function JobCard(props: JobCardProps) {
           </span>
         </div>
 
-        {deadline && (
-          <div id="JobPrazo" className="flex flex-col">
+        {deadline ? (
+          <div className="flex flex-col">
             <span className="text-sm text-zinc-500">Prazo</span>
             <span className="text-zinc-700">{deadlineContent}</span>
+          </div>
+        ) : (
+          <div className="flex flex-col">
+            <span className="text-sm text-zinc-500">Prazo</span>
+            <span className="text-zinc-700">Encerrado</span>
           </div>
         )}
 
@@ -109,21 +138,30 @@ export function JobCard(props: JobCardProps) {
         </div>
 
         <div id="JobHomeComponentButtons" className="flex justify-end gap-2">
-          {/* <button
-            onClick={() => console.log("editar: ", id)}
+          <button
+            onClick={() => setIsEditJobModalOpen(true)}
             className="flex items-center justify-center bg-zinc-500 text-white py-1 px-2 rounded transition hover:bg-zinc-400"
           >
             <PencilSimpleLine size={26} />
-          </button> */}
+          </button>
 
           <button
-            onClick={showConfirm}
+            onClick={showConfirmDeleteJob}
             className="flex items-center justify-center bg-red-700 text-white py-1 px-2 rounded transition hover:bg-red-600"
           >
             <TrashSimple size={26} />
           </button>
         </div>
       </div>
+
+      <EditJobModal
+        open={isEditJobModalOpen}
+        closeModal={handleEditJobModalClose}
+        id={id}
+        title={title}
+        dailyHours={dailyHours}
+        totalHours={totalHours}
+      />
     </div>
   );
 }
