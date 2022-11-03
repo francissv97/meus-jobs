@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
@@ -14,13 +14,16 @@ import { Header } from "../components/Header";
 import { JobCard } from "../components/JobCard";
 import { Footer } from "../components/Footer";
 import { CircleNotch, SmileyWink } from "phosphor-react";
+import { useJobs } from "../hooks/useJobs";
 
 export function Dashboard() {
-  const { user } = useAuth();
+  const [profileData, setProfileData] = useState<ProfileType>();
+  // const [jobs, setJobs] = useState<Job[]>();
+
   const navigate = useNavigate();
 
-  const [jobs, setJobs] = useState<Job[]>();
-  const [profileData, setProfileData] = useState<ProfileType>();
+  const { user } = useAuth();
+  const { jobs, setJobs } = useJobs();
 
   // async function editJob(jobId: string, allJobs: Job[]) {
   //   if (user?.email) {
@@ -74,7 +77,7 @@ export function Dashboard() {
         }
       }
 
-      user && getUserDoc(user);
+      getUserDoc(user);
 
       const unsub = onSnapshot(doc(db, "users", user.email), (doc) => {
         const data = doc.data() as UserFirestoreDocData;
@@ -85,6 +88,8 @@ export function Dashboard() {
       return unsub;
     }
   }, []);
+
+  console.log(jobs);
 
   return (
     <div className="flex flex-col bg-gradient-to-t from-zinc-500 via-zinc-200 to-zinc-200 min-h-screen">
