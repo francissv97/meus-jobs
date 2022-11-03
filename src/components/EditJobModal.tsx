@@ -1,10 +1,10 @@
 import { Modal, Form, Input } from "antd";
-import { addNewJob } from "../hooks/useFirestore";
-import toast from "react-hot-toast";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../services/firebase";
 import { useAuth } from "../hooks/useAuth";
-import { AddNewJobFieldValues } from "../types";
+import { AddNewJobFieldValues, Job } from "../types";
+import { useJobs } from "../hooks/useJobs";
 import { FloppyDisk } from "phosphor-react";
-import { updateDoc } from "firebase/firestore";
 
 interface Props {
   open: boolean;
@@ -24,29 +24,46 @@ export function EditJobModal({
   totalHours,
 }: Props) {
   const { user } = useAuth();
+  const { jobs } = useJobs();
   const [form] = Form.useForm();
 
   async function handleSubmitEditJob() {
-    const { title, dailyHours, totalHours } =
-      form.getFieldsValue() as AddNewJobFieldValues;
+    if (jobs) {
+      const { title, dailyHours, totalHours } =
+        form.getFieldsValue() as AddNewJobFieldValues;
 
-      // updateDoc()
+      const jobToBeEdited = jobs.find((job) => job.id == id);
+      const remainingJobs = jobs.filter((job) => job.id != id);
 
-    // if (user) {
-    //   addNewJob(user, title, dailyHours, totalHours)
-    //     .then(() => handleClose())
-    //     .catch((error) => {
-    //       console.log(error);
-    //       toast.error("Erro ao tentar adicionar Job.");
-    //     });
-    // }
+      if (jobToBeEdited && remainingJobs) {
+        jobToBeEdited.title = title;
+        jobToBeEdited.dailyHours = Number(dailyHours);
+        jobToBeEdited.totalHours = Number(totalHours);
+
+        remainingJobs.push(jobToBeEdited);
+
+        remainingJobs.sort(
+          (a: Job, b: Job) => a.createdAt.toMillis() - b.createdAt.toMillis()
+        );
+
+        if (user?.email) {
+          const docRef = doc(db, "users", user.email);
+
+          await updateDoc(docRef, {
+            jobs: remainingJobs,
+          });
+
+          handleClose();
+        }
+      }
+    }
   }
 
   function handleClose() {
     closeModal();
     form.resetFields();
   }
-  
+
   return (
     <Modal
       open={open}
@@ -57,7 +74,7 @@ export function EditJobModal({
     >
       <Form
         form={form}
-        onFinish={(handleSubmitEditJob)}
+        onFinish={handleSubmitEditJob}
         initialValues={{
           title: title,
           dailyHours: dailyHours,
