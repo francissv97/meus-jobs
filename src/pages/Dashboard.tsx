@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
@@ -18,24 +18,10 @@ import { useJobs } from "../hooks/useJobs";
 
 export function Dashboard() {
   const [profileData, setProfileData] = useState<ProfileType>();
-  // const [jobs, setJobs] = useState<Job[]>();
-
   const navigate = useNavigate();
 
   const { user } = useAuth();
   const { jobs, setJobs } = useJobs();
-
-  // async function editJob(jobId: string, allJobs: Job[]) {
-  //   if (user?.email) {
-  //     const filteredJobs = allJobs.filter((job) => job.id != jobId);
-
-  //     const docRef = doc(db, "users", user.email);
-
-  //     await updateDoc(docRef, {
-  //       jobs: filteredJobs,
-  //     }).catch((error) => console.error(error));
-  //   }
-  // }
 
   async function removeJob(jobId: string, allJobs: Job[]) {
     if (user?.email) {
@@ -88,8 +74,6 @@ export function Dashboard() {
       return unsub;
     }
   }, []);
-
-  console.log(jobs);
 
   return (
     <div className="flex flex-col bg-gradient-to-t from-zinc-500 via-zinc-200 to-zinc-200 min-h-screen">
