@@ -1,4 +1,5 @@
 import { Timestamp } from "firebase/firestore";
+import toast from "react-hot-toast";
 import { Job } from "../types";
 
 export function generateJobID() {
@@ -45,33 +46,34 @@ export function calculateJobDeadline(
   return daysDifference;
 }
 
-export function calculateJobsNumbers(jobs: Job[]): {
-  inProgress: number;
-  closeds: number;
-} {
-  const jobsMap = jobs?.map((job) => {
-    const deadline = calculateJobDeadline(
-      job.dailyHours,
-      job.totalHours,
-      job.createdAt
-    );
+export function calculateJobsNumbers(jobs: Job[]) {
+  if (jobs) {
+    const jobsMap = jobs.map((job) => {
+      const deadline = calculateJobDeadline(
+        job.dailyHours,
+        job.totalHours,
+        job.createdAt
+      );
 
-    return deadline > 0 ? 1 : 0;
-  });
+      return deadline > 0 ? 1 : 0;
+    });
 
-  const jobsInProgressArray = jobsMap?.filter((f) => f == 1);
-  const jobsClosedsArray = jobsMap?.filter((f) => f == 0);
+    const jobsInProgressArray = jobsMap.filter((f) => f == 1);
+    const jobsClosedsArray = jobsMap.filter((f) => f == 0);
 
-  const inProgress = jobsInProgressArray.length;
-  const closeds = jobsClosedsArray.length;
+    const inProgress = jobsInProgressArray.length;
+    const closeds = jobsClosedsArray.length;
 
-  return { inProgress, closeds };
+    return { inProgress, closeds };
+  }
+
+  return toast.error("Erro ao calcular número de jobs.");
 }
 
 export function calculateFreeTimeDay(profileHoursPerDay: number, jobs: Job[]) {
-  if (jobs.length == 0) {
-    return profileHoursPerDay;
-  } else {
+  if (jobs) {
+    if (jobs.length == 0) return profileHoursPerDay;
+
     const jobsMap = jobs.map((job) => {
       const deadline = calculateJobDeadline(
         job.dailyHours,
