@@ -46,9 +46,13 @@ export function calculateJobDeadline(
   return daysDifference;
 }
 
-export function calculateJobsNumbers(jobs: Job[]) {
-  if (jobs) {
-    const jobsMap = jobs.map((job) => {
+export function calculateJobsNumbers(jobs: Job[]): {
+  inProgress: number;
+  closeds: number;
+} {
+  const jobsMap =
+    jobs &&
+    jobs.map((job) => {
       const deadline = calculateJobDeadline(
         job.dailyHours,
         job.totalHours,
@@ -58,16 +62,13 @@ export function calculateJobsNumbers(jobs: Job[]) {
       return deadline > 0 ? 1 : 0;
     });
 
-    const jobsInProgressArray = jobsMap.filter((f) => f == 1);
-    const jobsClosedsArray = jobsMap.filter((f) => f == 0);
+  const jobsInProgressArray = jobsMap.filter((f) => f == 1);
+  const jobsClosedsArray = jobsMap.filter((f) => f == 0);
 
-    const inProgress = jobsInProgressArray.length;
-    const closeds = jobsClosedsArray.length;
+  const inProgress = jobsInProgressArray.length;
+  const closeds = jobsClosedsArray.length;
 
-    return { inProgress, closeds };
-  }
-
-  return toast.error("Erro ao calcular número de jobs.");
+  return { inProgress, closeds };
 }
 
 export function calculateFreeTimeDay(profileHoursPerDay: number, jobs: Job[]) {
