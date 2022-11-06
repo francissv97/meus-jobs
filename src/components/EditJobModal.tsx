@@ -42,10 +42,6 @@ export function EditJobModal({
 
         remainingJobs.push(jobToBeEdited);
 
-        remainingJobs.sort(
-          (a: Job, b: Job) => a.createdAt.toMillis() - b.createdAt.toMillis()
-        );
-
         if (user?.email) {
           const docRef = doc(db, "users", user.email);
 

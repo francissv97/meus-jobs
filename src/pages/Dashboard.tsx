@@ -68,7 +68,11 @@ export function Dashboard() {
       const unsub = onSnapshot(doc(db, "users", user.email), (doc) => {
         const data = doc.data() as UserFirestoreDocData;
 
-        setJobs(data.jobs);
+        setJobs(
+          data.jobs.sort(
+            (a: Job, b: Job) => a.createdAt.toMillis() - b.createdAt.toMillis()
+          )
+        );
       });
 
       return unsub;
