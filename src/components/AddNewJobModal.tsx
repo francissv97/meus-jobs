@@ -1,9 +1,9 @@
 import { Modal, Form, Input } from "antd";
-import { PlusCircle } from "phosphor-react";
 import toast from "react-hot-toast";
 import { useAuth } from "../hooks/useAuth";
 import { addNewJob } from "../hooks/useFirestore";
 import { AddNewJobFieldValues } from "../types";
+import { FloppyDisk } from "phosphor-react";
 
 interface Props {
   open: boolean;
@@ -77,7 +77,7 @@ export function AddNewJobModal({ open, closeModal }: Props) {
           onClick={() => form.submit()}
           className="flex items-center w-fit self-end justify-center gap-1 rounded bg-emerald-600 hover:bg-emerald-700 transition text-xl px-4 py-2 text-zinc-100"
         >
-          <PlusCircle size={32} />
+          <FloppyDisk size={32} />
           Salvar
         </button>
       </Form>
