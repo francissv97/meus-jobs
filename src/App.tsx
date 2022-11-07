@@ -4,6 +4,7 @@ import { JobsContextProvider } from "./contexts/JobsContext";
 import { Home } from "./pages/Home";
 import { Toaster } from "react-hot-toast";
 import { Profile } from "./pages/Profile";
+import { NotFound } from "./pages/NotFound";
 
 export function App() {
   return (
@@ -13,7 +14,7 @@ export function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
-            {/* <Route path="/job/:id" element={<Job />} /> */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
 
           <Toaster
