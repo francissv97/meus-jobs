@@ -1,12 +1,12 @@
+import { Carousel } from "antd";
 import { useAuth } from "../hooks/useAuth";
+import { Dashboard } from "./Dashboard";
 import { Logo } from "../components/Logo";
+import { Loading } from "../components/Loading";
 import { Footer } from "../components/Footer";
 import { GoogleLogo } from "phosphor-react";
 import bgOne from "../assets/backgroundOne.jpg";
 import bgTwo from "../assets/backgroundTwo.jpg";
-
-import { Dashboard } from "./Dashboard";
-import { Loading } from "../components/Loading";
 
 export function Home() {
   const { user, signInWithGoogle } = useAuth();
@@ -19,16 +19,23 @@ export function Home() {
     return (
       <div className="flex">
         <div className="w-0 sm:w-1/4 md:w-2/4 lg:3/4 min-h-screen relative">
-          <img
-            src={bgTwo}
-            alt="Background images signin page."
-            className="h-full object-cover"
-          />
-
-          <div className="bg-orange-500/20 absolute w-full h-full inset-0"></div>
+          <Carousel autoplay dots={false}>
+            <img
+              src={bgOne}
+              alt="Background images signin page."
+              className="h-screen object-cover"
+            />
+            <img
+              src={bgTwo}
+              alt="Background images signin page."
+              className="h-screen object-cover"
+            />
+          </Carousel>
         </div>
 
-        <div className="flex flex-1 flex-col gap-6 bg-gradient-to-t from-zinc-500 via-zinc-200 to-zinc-200 justify-center items-center px-2 relative">
+        <div className="bg-orange-500/20 absolute w-full h-full inset-0"></div>
+
+        <div className="flex flex-1 flex-col gap-6 bg-gradient-to-t from-zinc-600 via-zinc-200 to-zinc-200 justify-center items-center px-2 relative">
           <Logo />
 
           <div className="flex flex-col">
@@ -53,7 +60,7 @@ export function Home() {
         </div>
       </div>
     );
-  } else {
-    return <Dashboard />;
   }
+
+  return <Dashboard />;
 }
