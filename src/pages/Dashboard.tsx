@@ -84,12 +84,12 @@ export function Dashboard() {
       </div>
 
       {allJobs?.length == 0 && (
-        <div className="flex flex-col items-center">
-          <span className="absolute z-10 text-zinc-600 text-xl md:text-2xl mx-2">
-            Nenhum job por enquanto.:
+        <div className="flex flex-col items-center absolute bottom-0 left-0 right-0">
+          <span className="absolute z-20 text-zinc-600 font-medium text-xl md:text-2xl mx-2 mt-10">
+            Nenhum job por enquanto...
           </span>
 
-          <JobHunting className="max-w-md mx-auto absolute bottom-0 left-0 right-0" />
+          <JobHunting className="max-w-md mx-auto" />
         </div>
       )}
 
