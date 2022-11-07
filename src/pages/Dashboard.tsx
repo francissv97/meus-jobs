@@ -13,8 +13,9 @@ import { Job, ProfileType, UserAuth, UserFirestoreDocData } from "../types";
 import { Header } from "../components/Header";
 import { JobCard } from "../components/JobCard";
 import { Footer } from "../components/Footer";
-import { CircleNotch, SmileyWink } from "phosphor-react";
+import { CircleNotch } from "phosphor-react";
 import { useJobs } from "../hooks/useJobs";
+import { JobHunting } from "../components/JobHunting";
 
 export function Dashboard() {
   const [profileData, setProfileData] = useState<ProfileType>();
@@ -80,7 +81,7 @@ export function Dashboard() {
   }, []);
 
   return (
-    <div className="flex flex-col bg-gradient-to-t from-zinc-500 via-zinc-200 to-zinc-200 min-h-screen">
+    <div className="flex flex-col bg-gradient-to-t from-zinc-600 via-zinc-200 to-zinc-200 min-h-screen">
       <Header jobs={jobs} profileHoursPerDay={profileData?.hoursPerDay} />
 
       <div className="flex flex-col gap-4 mt-4 max-w-4xl mx-auto -translate-y-12 w-full px-4">
@@ -89,7 +90,8 @@ export function Dashboard() {
             size="large"
             indicator={<CircleNotch className="text-zinc-500 animate-spin" />}
           />
-        ) : jobs.length > 0 ? (
+        ) : (
+          jobs.length > 0 &&
           jobs.map((job) => (
             <JobCard
               key={job.id}
@@ -102,15 +104,20 @@ export function Dashboard() {
               onClickRemoveJob={() => removeJob(job.id, jobs)}
             />
           ))
-        ) : (
-          <strong className="text-zinc-600 text-2xl font-normal flex items-center gap-2 mt-16">
-            <SmileyWink size={42} weight="light" className="text-orange-500" />
-            Nenhum job registrado por enquanto
-          </strong>
         )}
       </div>
 
-      <Footer className="mt-auto" />
+      {jobs?.length == 0 && (
+        <div className="flex flex-col items-center">
+          <span className="absolute z-10 text-zinc-700 text-xl md:text-2xl mx-2">
+            Nenhum job por enquanto.:
+          </span>
+
+          <JobHunting className="max-w-md mx-auto absolute bottom-0 left-0 right-0" />
+        </div>
+      )}
+
+      <Footer className="absolute mt-auto bottom-0 left-0 right-0 text-zinc-100" />
     </div>
   );
 }
