@@ -117,7 +117,7 @@ export function Dashboard() {
         </div>
       )}
 
-      <Footer className="absolute mt-auto bottom-0 left-0 right-0 text-zinc-100" />
+      <Footer className="absolute mt-auto bottom-0 left-0 right-0 text-zinc-300" />
     </div>
   );
 }

@@ -122,16 +122,16 @@ export function JobCard({
         <div className="flex justify-end gap-4">
           <button
             onClick={() => setIsEditJobModalOpen(true)}
-            className="flex items-center justify-center border border-zinc-500 text-zinc-500 py-1 px-2 rounded-full transition hover:bg-zinc-400"
+            className="flex items-center justify-center text-zinc-500 py-1 px-2 rounded-full border border-transparent transition hover:border-zinc-700 hover:text-zinc-700"
           >
-            <PencilSimpleLine size={28} />
+            <PencilSimpleLine size={32} />
           </button>
 
           <button
             onClick={showConfirmDeleteJob}
-            className="flex items-center justify-center border border-red-700 text-red-700 py-1 px-2 rounded-full transition hover:bg-red-600"
+            className="text-red-700 py-1 px-2 rounded-full border border-transparent transition hover:border-red-500 hover:text-red-500"
           >
-            <TrashSimple size={28} />
+            <TrashSimple size={32} />
           </button>
         </div>
       </div>
