@@ -6,18 +6,20 @@ export function SimpleHeader() {
 
   return (
     <div className="bg-gradient-to-tr from-zinc-700 via-zinc-600 to-zinc-500">
-      <div className="flex items-center justify-between gap-4 max-w-4xl mx-auto p-4">
+      <div className="flex items-center justify-between gap-1 max-w-4xl mx-auto p-4">
         <div
           onClick={() => navigate("/")}
-          className="group p-2 pl-0 cursor-pointer"
+          className="group cursor-pointer absolute"
         >
           <ArrowUUpLeft
             size={32}
             className="group text-zinc-400 group-hover:text-zinc-200"
           />
         </div>
-        <strong className="text-xl text-zinc-300 font-normal">Perfil</strong>
-        <div></div>
+
+        <div className="flex flex-1 justify-center">
+          <strong className="text-xl text-zinc-300 font-normal">Perfil</strong>
+        </div>
       </div>
     </div>
   );

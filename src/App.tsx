@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthContextProvider } from "./contexts/AuthContext";
-import { JobsContextProvider } from "./contexts/JobsContext";
+import { AllJobsContextProvider } from "./contexts/JobsContext";
 import { Home } from "./pages/Home";
 import { Toaster } from "react-hot-toast";
 import { Profile } from "./pages/Profile";
@@ -10,7 +10,7 @@ export function App() {
   return (
     <BrowserRouter>
       <AuthContextProvider>
-        <JobsContextProvider>
+        <AllJobsContextProvider>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
@@ -26,7 +26,7 @@ export function App() {
               },
             }}
           />
-        </JobsContextProvider>
+        </AllJobsContextProvider>
       </AuthContextProvider>
     </BrowserRouter>
   );

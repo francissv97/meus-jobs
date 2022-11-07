@@ -8,22 +8,22 @@ import {
 import { Job } from "../types";
 
 interface AllJobsInterface {
-  jobs: Job[] | undefined;
-  setJobs: Dispatch<SetStateAction<Job[] | undefined>>;
+  allJobs: Job[] | undefined;
+  setAllJobs: Dispatch<SetStateAction<Job[] | undefined>>;
 }
 
 interface AllJobsContextProviderProps {
   children: ReactNode;
 }
 
-export const JobsContext = createContext({} as AllJobsInterface);
+export const AllJobsContext = createContext({} as AllJobsInterface);
 
-export function JobsContextProvider({ children }: AllJobsContextProviderProps) {
-  const [jobs, setJobs] = useState<Job[]>();
+export function AllJobsContextProvider({ children }: AllJobsContextProviderProps) {
+  const [allJobs, setAllJobs] = useState<Job[]>();
 
   return (
-    <JobsContext.Provider value={{ jobs, setJobs }}>
+    <AllJobsContext.Provider value={{ allJobs, setAllJobs }}>
       {children}
-    </JobsContext.Provider>
+    </AllJobsContext.Provider>
   );
 }

@@ -1,7 +1,7 @@
 import { Modal, Form, Input } from "antd";
 import toast from "react-hot-toast";
 import { useAuth } from "../hooks/useAuth";
-import { addNewJob } from "../hooks/useFirestore";
+import { addJob } from "../hooks/useFirestore";
 import { AddNewJobFieldValues } from "../types";
 import { FloppyDisk } from "phosphor-react";
 
@@ -19,7 +19,7 @@ export function AddNewJobModal({ open, closeModal }: Props) {
       form.getFieldsValue() as AddNewJobFieldValues;
 
     if (user) {
-      addNewJob(user, title, dailyHours, totalHours)
+      addJob(user, title, dailyHours, totalHours)
         .then(() => handleClose())
         .catch((error) => {
           console.log(error);

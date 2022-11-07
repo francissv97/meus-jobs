@@ -6,11 +6,18 @@ import {
   updateDoc,
   DocumentSnapshot,
   DocumentData,
+  arrayRemove,
 } from "firebase/firestore";
 import { db } from "../services/firebase";
 import toast from "react-hot-toast";
-import { UserAuth, UserFirestoreDocData } from "../types";
+import {
+  AddNewJobFieldValues,
+  Job,
+  UserAuth,
+  UserFirestoreDocData,
+} from "../types";
 import { generateJobID } from "../utils";
+import { useAllJobs } from "./useAllJobs";
 
 export async function getFirestoreDocumentSnapshot(userEmail: string) {
   const docRef = doc(db, "users", userEmail);
@@ -57,7 +64,7 @@ export async function createNewUserDocumentInFirestore(userEmail: string) {
   }
 }
 
-export async function addNewJob(
+export async function addJob(
   user: UserAuth,
   title: string,
   dailyHours: number,
@@ -89,5 +96,45 @@ export async function addNewJob(
   } catch (error) {
     console.error(error);
     toast.error("Erro ao tentar adicionar novo job.!");
+  }
+}
+
+export async function removeJob(user: UserAuth, job: Job) {
+  if (user?.email) {
+    const docRef = doc(db, "users", user.email);
+
+    await updateDoc(docRef, {
+      jobs: arrayRemove(job),
+    }).catch((error) => console.error(error));
+  }
+}
+
+export async function editJob(
+  user: UserAuth,
+  allJobs: Job[],
+  currentJob: Job,
+  newValues: AddNewJobFieldValues
+) {
+  console.log(allJobs);
+
+  if (allJobs) {
+    const jobToBeEdited = allJobs.find((item) => item.id == currentJob.id);
+    const remainingJobs = allJobs.filter((item) => item.id != currentJob.id);
+
+    if (jobToBeEdited && remainingJobs) {
+      jobToBeEdited.title = newValues.title;
+      jobToBeEdited.dailyHours = Number(newValues.dailyHours);
+      jobToBeEdited.totalHours = Number(newValues.totalHours);
+
+      remainingJobs.push(jobToBeEdited);
+
+      if (user?.email) {
+        const docRef = doc(db, "users", user.email);
+
+        await updateDoc(docRef, {
+          jobs: remainingJobs,
+        });
+      }
+    }
   }
 }

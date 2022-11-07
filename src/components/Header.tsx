@@ -8,24 +8,25 @@ import { calculateFreeTimeDay, calculateJobsNumbers } from "../utils";
 import { CircleNotch, Plus } from "phosphor-react";
 import { Divider } from "antd";
 
-interface Props {
+interface HeaderProps {
   jobs: Job[] | undefined;
   profileHoursPerDay: number | undefined;
 }
 
-export function Header({ jobs, profileHoursPerDay }: Props) {
+export function Header({ jobs, profileHoursPerDay }: HeaderProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const { user } = useAuth();
   const numbers = jobs && calculateJobsNumbers(jobs);
   const freeTimeDay =
     profileHoursPerDay &&
     jobs &&
     calculateFreeTimeDay(profileHoursPerDay, jobs);
 
-  const { user } = useAuth();
+  function handleModalClose() {
+    setIsModalOpen(false);
+  }
 
-  const handleModalClose = () => setIsModalOpen(false);
-  
   return (
     <div className="bg-gradient-to-t from-zinc-700 via-zinc-600 to-zinc-600 pt-4 pb-16">
       <div className="flex flex-col justify-between max-w-4xl mx-auto">

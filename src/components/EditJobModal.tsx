@@ -3,37 +3,27 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
 import { useAuth } from "../hooks/useAuth";
 import { AddNewJobFieldValues, Job } from "../types";
-import { useJobs } from "../hooks/useJobs";
+import { useAllJobs } from "../hooks/useAllJobs";
 import { FloppyDisk } from "phosphor-react";
 
-interface Props {
+interface EditJobModalProps {
   open: boolean;
   closeModal: () => void;
-  id: string;
-  title: string;
-  dailyHours: number;
-  totalHours: number;
+  job: Job; 
 }
 
-export function EditJobModal({
-  open,
-  closeModal,
-  id,
-  title,
-  dailyHours,
-  totalHours,
-}: Props) {
+export function EditJobModal({ open, closeModal, job }: EditJobModalProps) {
   const { user } = useAuth();
-  const { jobs } = useJobs();
+  const { allJobs } = useAllJobs();
   const [form] = Form.useForm();
 
   async function handleSubmitEditJob() {
-    if (jobs) {
+    if (allJobs) {
       const { title, dailyHours, totalHours } =
         form.getFieldsValue() as AddNewJobFieldValues;
 
-      const jobToBeEdited = jobs.find((job) => job.id == id);
-      const remainingJobs = jobs.filter((job) => job.id != id);
+      const jobToBeEdited = allJobs.find((item) => item.id == job.id);
+      const remainingJobs = allJobs.filter((item) => item.id != job.id);
 
       if (jobToBeEdited && remainingJobs) {
         jobToBeEdited.title = title;
@@ -72,9 +62,9 @@ export function EditJobModal({
         form={form}
         onFinish={handleSubmitEditJob}
         initialValues={{
-          title: title,
-          dailyHours: dailyHours,
-          totalHours: totalHours,
+          title: job.title,
+          dailyHours: job.dailyHours,
+          totalHours: job.totalHours,
         }}
         className="flex flex-col"
         layout="vertical"
