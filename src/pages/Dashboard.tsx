@@ -1,27 +1,25 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { arrayRemove, doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../services/firebase";
 import { useAuth } from "../hooks/useAuth";
+import { Spin } from "antd";
+import toast from "react-hot-toast";
 import {
-  editJob,
   getFirestoreDocumentSnapshot,
   isFirstAccessUser,
 } from "../hooks/useFirestore";
-import toast from "react-hot-toast";
-import { Spin } from "antd";
-import { Job, ProfileType, UserAuth, UserFirestoreDocData } from "../types";
+import { useAllJobs } from "../hooks/useAllJobs";
 import { Header } from "../components/Header";
 import { JobCard } from "../components/JobCard";
-import { Footer } from "../components/Footer";
-import { CircleNotch } from "phosphor-react";
-import { useAllJobs } from "../hooks/useAllJobs";
 import { JobHunting } from "../components/JobHunting";
+import { Footer } from "../components/Footer";
+import { Job, ProfileType, UserAuth, UserFirestoreDocData } from "../types";
+import { CircleNotch } from "phosphor-react";
 
 export function Dashboard() {
   const [profileData, setProfileData] = useState<ProfileType>();
   const navigate = useNavigate();
-
   const { user } = useAuth();
   const { allJobs, setAllJobs } = useAllJobs();
 
@@ -34,11 +32,9 @@ export function Dashboard() {
 
             if (docSnap.exists()) {
               const docData = docSnap.data() as UserFirestoreDocData;
-              const docProfile = docData.profile;
-
-              setProfileData(docProfile);
-
+              setProfileData(docData.profile);
               const isFirstAccess = await isFirstAccessUser(docSnap);
+
               if (isFirstAccess) {
                 toast(
                   "Primeiro acesso ao App. Por favor, preencha os dados do perfil para começar a adicionar jobs.",
@@ -82,18 +78,14 @@ export function Dashboard() {
         ) : (
           allJobs.length > 0 &&
           allJobs.map((job) => (
-            <JobCard
-              key={job.id}
-              job={job}
-              profileData={profileData}
-            />
+            <JobCard key={job.id} job={job} profileData={profileData} />
           ))
         )}
       </div>
 
       {allJobs?.length == 0 && (
         <div className="flex flex-col items-center">
-          <span className="absolute z-10 text-zinc-700 text-xl md:text-2xl mx-2">
+          <span className="absolute z-10 text-zinc-600 text-xl md:text-2xl mx-2">
             Nenhum job por enquanto.:
           </span>
 
@@ -101,7 +93,7 @@ export function Dashboard() {
         </div>
       )}
 
-      <Footer className="absolute mt-auto bottom-0 left-0 right-0 text-zinc-300" />
+      <Footer className="mt-auto z-20 text-zinc-300" />
     </div>
   );
 }

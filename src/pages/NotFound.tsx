@@ -21,7 +21,7 @@ export function NotFound() {
         </button>
       </div>
 
-      <Footer className="absolute bottom-2" />
+      <Footer className="absolute bottom-0" />
     </div>
   );
 }

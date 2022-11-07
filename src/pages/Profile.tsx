@@ -336,7 +336,7 @@ export function Profile() {
           {isFormDisabled ? (
             <button
               onClick={() => setIsFormDisabled(false)}
-              className="flex items-center gap-1 bg-sky-600 rounded w-full md:w-fit text-xl justify-center p-2 mb-2 self-center text-zinc-100 transition hover:bg-sky-700"
+              className="flex items-center gap-1 justify-center w-full md:w-fit text-xl  rounded px-4 py-2 md:px-7 text-zinc-100 transition bg-sky-600 hover:bg-sky-700"
             >
               <PencilSimpleLine size={22} />
               Editar
@@ -344,7 +344,7 @@ export function Profile() {
           ) : (
             <button
               onClick={() => form.submit()}
-              className="flex items-center justify-center gap-1 w-full md:w-fit text-xl p-2 md:px-7 rounded border-2 border-transparent text-zinc-100 bg-green-600 hover:bg-zinc-100 hover:border-green-600 hover:text-green-600 disabled:bg-zinc-400 disabled:cursor-not-allowed disabled:hover:border-transparent disabled:hover:text-zinc-100 transition"
+              className="flex items-center gap-1 justify-center w-full md:w-fit text-xl px-4 py-2 md:px-7 rounded border-2 border-transparent text-zinc-100 bg-green-600 hover:bg-zinc-100 hover:border-green-600 hover:text-green-600 disabled:bg-zinc-400 disabled:cursor-not-allowed disabled:hover:border-transparent disabled:hover:text-zinc-100 transition"
             >
               <FloppyDisk size={30} />
               Salvar
