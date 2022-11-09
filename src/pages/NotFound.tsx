@@ -8,7 +8,7 @@ export function NotFound() {
 
   return (
     <div className="min-h-screen flex flex-col gap-6 bg-gradient-to-t from-zinc-500 via-zinc-200 to-zinc-200 justify-center items-center px-2 relative">
-      <div className="flex flex-col">
+      <div className="flex flex-1 flex-col justify-center">
         <ManLost />
 
         <button
@@ -21,7 +21,7 @@ export function NotFound() {
         </button>
       </div>
 
-      <Footer className="absolute bottom-0" />
+      <Footer className="pb-4" />
     </div>
   );
 }

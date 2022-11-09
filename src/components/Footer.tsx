@@ -6,7 +6,7 @@ interface Props extends ClassAttributes<HTMLDivElement> {
 
 export function Footer({ className }: Props) {
   return (
-    <div className={`text-center pb-2 ${className}`}>
+    <div className={`text-center ${className}`}>
       <span>
         <a
           href="https://francissportfolio.vercel.app/"

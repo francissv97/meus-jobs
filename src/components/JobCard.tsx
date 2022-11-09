@@ -26,9 +26,12 @@ export function JobCard({ job, profileData }: JobCardProps) {
     confirm({
       content: (
         <>
-          <strong className="font-normal text-zinc-600 text-xl">
-            Excluir job?
-          </strong>
+          <div className="flex gap-4">
+            <TrashSimple size={32} className="text-red-600 animate-bounce" />
+            <strong className="font-normal text-zinc-600 text-xl">
+              Excluir job?
+            </strong>
+          </div>
 
           <p className="text-lg text-zinc-600 mt-4">
             O job <span className="text-red-600 text-xl">{job.title}</span> será
@@ -39,6 +42,7 @@ export function JobCard({ job, profileData }: JobCardProps) {
       cancelText: "Cancelar",
       okText: "EXCLUIR",
       okType: "danger",
+      icon: null,
       onOk: () => user && removeJob(user, job),
     });
   };

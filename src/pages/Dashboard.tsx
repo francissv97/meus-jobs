@@ -66,10 +66,10 @@ export function Dashboard() {
   }, []);
 
   return (
-    <div className="flex flex-col bg-gradient-to-t from-zinc-600 via-zinc-200 to-zinc-200 min-h-screen">
+    <div className="flex flex-col bg-gradient-to-t from-zinc-600 via-zinc-400 to-zinc-100 min-h-screen">
       <Header jobs={allJobs} profileHoursPerDay={profileData?.hoursPerDay} />
 
-      <div className="flex flex-col gap-4 mt-4 max-w-4xl mx-auto -translate-y-12 w-full px-4">
+      <div className="flex flex-1 flex-col gap-4 mt-4 max-w-4xl mx-auto -translate-y-12 w-full px-4">
         {!allJobs ? (
           <Spin
             size="large"
@@ -83,17 +83,17 @@ export function Dashboard() {
         )}
       </div>
 
-      {allJobs?.length == 0 && (
-        <div className="flex flex-col items-center absolute bottom-0 left-0 right-0">
-          <span className="absolute z-20 text-zinc-600 font-medium text-xl md:text-2xl mx-2 mt-10">
+      {allJobs?.length == 0 ? (
+        <div className="flex flex-col items-center">
+          <span className="text-zinc-600 font-medium text-xl md:text-2xl mx-2 mt-2">
             Nenhum job por enquanto...
           </span>
 
-          <JobHunting className="max-w-md mx-auto" />
+          <JobHunting />
         </div>
+      ) : (
+        <Footer className="text-zinc-200 pb-4" />
       )}
-
-      <Footer className="mt-auto z-20 text-zinc-300" />
     </div>
   );
 }
