@@ -25,6 +25,7 @@ export function Home() {
               alt="Background images signin page."
               className="h-screen object-cover"
             />
+
             <img
               src={bgTwo}
               alt="Background images signin page."
@@ -36,7 +37,7 @@ export function Home() {
         <div className="bg-orange-500/20 absolute w-full h-full inset-0"></div>
 
         <div className="flex flex-1 flex-col  bg-gradient-to-t from-zinc-600 via-zinc-200 to-zinc-200 justify-between items-center px-2 relative">
-          <div className="flex-1 flex gap-6 flex-col justify-center">
+          <div className="flex-1 flex gap-6 flex-col justify-center items-center">
             <Logo />
 
             <div className="flex flex-col">

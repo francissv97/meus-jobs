@@ -82,7 +82,7 @@ export function JobCard({ job, profileData }: JobCardProps) {
     <div className="grid grid-cols-3 bg-zinc-100 gap-4 px-4 py-6 rounded shadow-xl">
       <div className="flex col-span-2 flex-col gap-2">
         <div id="JobName" className="flex items-center">
-          <span className="text-zinc-700 text-xl font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+          <span className="text-zinc-700 text-xl font-medium overflow-hidden text-ellipsis">
             {job.title}
           </span>
         </div>
@@ -124,7 +124,7 @@ export function JobCard({ job, profileData }: JobCardProps) {
           </span>
         </div>
 
-        <div className="flex justify-end gap-4">
+        <div className="flex justify-end gap-2 md:gap-4">
           <button
             onClick={() => setIsEditJobModalOpen(true)}
             className="flex items-center justify-center text-zinc-500 py-1 px-2 rounded-full border border-transparent transition hover:border-zinc-700 hover:text-zinc-700"
@@ -141,11 +141,13 @@ export function JobCard({ job, profileData }: JobCardProps) {
         </div>
       </div>
 
-      <EditJobModal
-        open={isEditJobModalOpen}
-        closeModal={handleEditJobModalClose}
-        job={job}
-      />
+      {isEditJobModalOpen && (
+        <EditJobModal
+          open={isEditJobModalOpen}
+          closeModal={handleEditJobModalClose}
+          job={job}
+        />
+      )}
     </div>
   );
 }
