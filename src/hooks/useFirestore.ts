@@ -17,7 +17,6 @@ import {
   UserFirestoreDocData,
 } from "../types";
 import { generateJobID } from "../utils";
-import { useAllJobs } from "./useAllJobs";
 
 export async function getFirestoreDocumentSnapshot(userEmail: string) {
   const docRef = doc(db, "users", userEmail);
@@ -115,8 +114,6 @@ export async function editJob(
   currentJob: Job,
   newValues: AddNewJobFieldValues
 ) {
-  console.log(allJobs);
-
   if (allJobs) {
     const jobToBeEdited = allJobs.find((item) => item.id == currentJob.id);
     const remainingJobs = allJobs.filter((item) => item.id != currentJob.id);
