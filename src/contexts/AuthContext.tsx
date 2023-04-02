@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
-import { createNewUserDocumentInFirestore } from "../hooks/useFirestore";
+import { createNewUserDocumentInFirestore } from "../services/firestore";
 import { auth } from "../services/firebase";
 import { UserAuth } from "../types";
 import { useNavigate } from "react-router-dom";

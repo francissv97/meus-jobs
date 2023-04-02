@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import {
   getFirestoreDocumentSnapshot,
   isFirstAccessUser,
-} from "../hooks/useFirestore";
+} from "../services/firestore";
 import { useAllJobs } from "../hooks/useAllJobs";
 import { Header } from "../components/Header";
 import { JobCard } from "../components/JobCard";

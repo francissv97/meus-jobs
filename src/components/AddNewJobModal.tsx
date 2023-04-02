@@ -1,7 +1,7 @@
 import { Modal, Form, Input } from "antd";
 import toast from "react-hot-toast";
 import { useAuth } from "../hooks/useAuth";
-import { addJob } from "../hooks/useFirestore";
+import { addJob } from "../services/firestore";
 import { AddNewJobFieldValues } from "../types";
 import { FloppyDisk } from "phosphor-react";
 

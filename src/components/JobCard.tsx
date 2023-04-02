@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Modal } from "antd";
-import { Job, ProfileType, UserAuth } from "../types";
+import { Job, ProfileType } from "../types";
 import {
   calculateJobDeadline,
   calculateJobValue,
@@ -8,7 +8,7 @@ import {
 } from "../utils";
 import { EditJobModal } from "./EditJobModal";
 import { PencilSimpleLine, TrashSimple } from "phosphor-react";
-import { removeJob } from "../hooks/useFirestore";
+import { removeJob } from "../services/firestore";
 import { useAuth } from "../hooks/useAuth";
 
 interface JobCardProps {
