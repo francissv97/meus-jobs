@@ -32,11 +32,7 @@ export async function isFirstAccessUser(
     const docData = docSnap.data() as UserFirestoreDocData;
     const docProfile = docData.profile;
 
-    if (Object.keys(docProfile).length == 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return Object.keys(docProfile).length == 0;
   }
 }
 
@@ -87,6 +83,8 @@ export async function addJob(
               dailyHours: Number(dailyHours),
               totalHours: Number(totalHours),
               createdAt: Timestamp.now(),
+              markedAsDone: false,
+              completionDate: null,
             },
           ],
         }).catch((error) => console.error(error));
@@ -115,23 +113,53 @@ export async function editJob(
   newValues: AddNewJobFieldValues
 ) {
   if (allJobs) {
-    const jobToBeEdited = allJobs.find((item) => item.id == currentJob.id);
-    const remainingJobs = allJobs.filter((item) => item.id != currentJob.id);
-
-    if (jobToBeEdited && remainingJobs) {
-      jobToBeEdited.title = newValues.title;
-      jobToBeEdited.dailyHours = Number(newValues.dailyHours);
-      jobToBeEdited.totalHours = Number(newValues.totalHours);
-
-      remainingJobs.push(jobToBeEdited);
-
-      if (user?.email) {
-        const docRef = doc(db, "users", user.email);
-
-        await updateDoc(docRef, {
-          jobs: remainingJobs,
-        });
+    const updatedJobs = allJobs.map((job) => {
+      if (job.id === currentJob.id) {
+        return {
+          ...job,
+          title: newValues.title,
+          dailyHours: Number(newValues.dailyHours),
+          totalHours: Number(newValues.totalHours),
+        };
+      } else {
+        return job;
       }
+    });
+
+    if (user?.email) {
+      const docRef = doc(db, "users", user.email);
+
+      await updateDoc(docRef, {
+        jobs: updatedJobs,
+      });
+    }
+  }
+}
+
+export async function markJobAsDone(
+  user: UserAuth,
+  allJobs: Job[],
+  currentJob: Job,
+) {
+  if (allJobs) {
+    const updatedJobs = allJobs.map((job) => {
+      if (job.id === currentJob.id) {
+        return {
+          ...job,
+          markedAsDone: true,
+          completionDate: Timestamp.now(),
+        };
+      } else {
+        return job;
+      }
+    });
+
+    if (user?.email) {
+      const docRef = doc(db, "users", user.email);
+
+      await updateDoc(docRef, {
+        jobs: updatedJobs,
+      });
     }
   }
 }
