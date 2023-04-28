@@ -7,9 +7,15 @@ import {
   calculateUserValueHour,
 } from "../utils";
 import { EditJobModal } from "./EditJobModal";
-import { PencilSimpleLine, TrashSimple } from "phosphor-react";
-import { removeJob } from "../services/firestore";
+import {
+  PencilSimpleLine,
+  TrashSimple,
+  CheckCircle,
+  Checks,
+} from "phosphor-react";
+import { markJobAsDone, removeJob } from "../services/firestore";
 import { useAuth } from "../hooks/useAuth";
+import { useAllJobs } from "../hooks/useAllJobs";
 
 interface JobCardProps {
   job: Job;
@@ -18,16 +24,36 @@ interface JobCardProps {
 
 export function JobCard({ job, profileData }: JobCardProps) {
   const [isEditJobModalOpen, setIsEditJobModalOpen] = useState(false);
-
   const { user } = useAuth();
+  const { allJobs } = useAllJobs();
   const { confirm } = Modal;
 
-  const showConfirmDeleteJob = () => {
+  const confirmMarkAsDoneJob = () => {
+    confirm({
+      content: (
+        <p className="text-lg text-zinc-600">
+          Marcar o job{" "}
+          <span className="text-green-700 text-xl">{job.title}</span> como
+          concluído?
+        </p>
+      ),
+      cancelText: "Cancelar",
+      cancelButtonProps: { type: "text" },
+      okText: "Marcar como concluído",
+      okType: "ghost",
+      icon: null,
+      onOk: () => {
+        if (user && allJobs) markJobAsDone(user, allJobs, job);
+      },
+    });
+  };
+
+  const confirmDeleteJob = () => {
     confirm({
       content: (
         <>
           <div className="flex gap-4">
-            <TrashSimple size={32} className="text-red-600 animate-bounce" />
+            <TrashSimple size={32} className="text-red-600" />
             <strong className="font-normal text-zinc-600 text-xl">
               Excluir job?
             </strong>
@@ -79,7 +105,15 @@ export function JobCard({ job, profileData }: JobCardProps) {
     );
 
   return (
-    <div className="grid grid-cols-3 bg-zinc-100 gap-4 px-4 py-6 rounded shadow-xl">
+    <div
+      className={`grid grid-cols-3 bg-zinc-100 gap-4 px-4 py-6 rounded shadow-xl ${
+        job.markedAsDone
+          ? "border-l-4 border-green-600"
+          : jobInProgress
+          ? "border-l-4 border-sky-700"
+          : "border-l-4 border-red-700"
+      }`}
+    >
       <div className="flex col-span-2 flex-col gap-2">
         <div id="JobName" className="flex items-center">
           <span className="text-zinc-700 text-xl font-medium overflow-hidden text-ellipsis">
@@ -87,21 +121,20 @@ export function JobCard({ job, profileData }: JobCardProps) {
           </span>
         </div>
 
-        {deadline ? (
-          <div className="flex flex-col">
-            <span className="text-sm text-zinc-500">Prazo</span>
-            <span className="text-zinc-700">{deadlineContent}</span>
-          </div>
-        ) : (
-          <div className="flex flex-col">
-            <span className="text-sm text-zinc-500">Prazo</span>
-            <span className="text-zinc-700">Encerrado</span>
-          </div>
-        )}
+        <div className="flex flex-col">
+          <span className="text-sm text-zinc-500">Prazo</span>
+          <span className="text-zinc-700">
+            {job.markedAsDone
+              ? "Encerrado"
+              : jobInProgress
+              ? deadlineContent
+              : "PRAZO MAX. ATINGIDO"}
+          </span>
+        </div>
 
         <div id="JobValor" className="flex flex-col justify-center">
           <span className="text-sm text-zinc-500">Valor</span>
-          <span className="text-zinc-700">
+          <span className="text-zinc-700 min-h-[20px] leading-none">
             {jobValue &&
               jobValue.toLocaleString("pt-BR", {
                 style: "currency",
@@ -112,29 +145,55 @@ export function JobCard({ job, profileData }: JobCardProps) {
       </div>
 
       <div className="flex flex-col justify-between">
-        <div
-          className={`${
-            jobInProgress
-              ? "bg-green-300/20 text-green-700"
-              : "bg-red-300/20 text-red-700 "
-          } px-2 py-1 text-sm text-center rounded w-fit self-end`}
-        >
-          <span className="whitespace-nowrap">
-            {jobInProgress ? "EM ANDAMENTO" : "ENCERRADO"}
-          </span>
+        <div className="flex self-end items-center">
+          <div
+            className={`${
+              job.markedAsDone
+                ? "bg-green-300/20 text-green-700"
+                : jobInProgress
+                ? "bg-sky-300/20 text-sky-700"
+                : "bg-red-300/20 text-red-700"
+            } px-2 py-1 text-sm text-center rounded h-fit w-fit`}
+          >
+            <span className="whitespace-nowrap font-medium">
+              {job.markedAsDone
+                ? "ENCERRADO"
+                : jobInProgress
+                ? "EM ANDAMENTO"
+                : "PRAZO MAX. ATINGIDO"}
+            </span>
+          </div>
+
+          <button
+            onClick={confirmMarkAsDoneJob}
+            disabled={job.markedAsDone}
+            className={`${
+              job.markedAsDone
+                ? "text-green-700"
+                : "text-zinc-500 hover:bg-green-50 hover:text-green-700 hover:shadow-lg"
+            } py-1 px-1 ml-1 rounded-full duration-300`}
+          >
+            {job.markedAsDone ? (
+              <Checks size={32} />
+            ) : (
+              <CheckCircle size={32} />
+            )}
+          </button>
         </div>
 
         <div className="flex justify-end gap-2 md:gap-4">
-          <button
-            onClick={() => setIsEditJobModalOpen(true)}
-            className="flex items-center justify-center text-zinc-500 py-1 px-2 rounded-full border border-transparent transition hover:border-zinc-700 hover:text-zinc-700"
-          >
-            <PencilSimpleLine size={32} />
-          </button>
+          {!job.markedAsDone && (
+            <button
+              onClick={() => setIsEditJobModalOpen(true)}
+              className="text-zinc-500 py-1 px-2 rounded-full duration-300 hover:bg-zinc-50 hover:shadow-lg"
+            >
+              <PencilSimpleLine size={32} />
+            </button>
+          )}
 
           <button
-            onClick={showConfirmDeleteJob}
-            className="text-red-700 py-1 px-2 rounded-full border border-transparent transition hover:border-red-500 hover:text-red-500"
+            onClick={confirmDeleteJob}
+            className="text-red-700 py-1 px-2 rounded-full duration-300 hover:bg-red-100 hover:shadow-lg"
           >
             <TrashSimple size={32} />
           </button>
