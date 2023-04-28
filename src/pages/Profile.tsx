@@ -7,15 +7,13 @@ import { useAuth } from "../hooks/useAuth";
 import { ProfileType, UserFirestoreDocData } from "../types";
 import { SimpleHeader } from "../components/SimpleHeader";
 import { calculateUserValueHour } from "../utils";
-import { FloppyDisk, PencilSimpleLine } from "phosphor-react";
-import { useNavigate } from "react-router-dom";
+import { CircleNotch, FloppyDisk, PencilSimpleLine } from "phosphor-react";
 
 export function Profile() {
   const { user } = useAuth();
-  const navigate = useNavigate();
-
   const [form] = Form.useForm();
   const [isFormDisabled, setIsFormDisabled] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [valueHour, setValueHour] = useState<number>();
   const [profileState, setProfileState] = useState<ProfileType | null>();
 
@@ -59,6 +57,8 @@ export function Profile() {
 
   useEffect(() => {
     async function getProfileData() {
+      setIsLoading(true);
+
       if (user?.email) {
         const docRef = doc(db, "users", user.email);
         const docSnap = await getDoc(docRef);
@@ -102,28 +102,43 @@ export function Profile() {
       }
     }
 
-    getProfileData();
+    getProfileData().finally(() => setIsLoading(false));
   }, []);
 
   return (
     <div className="bg-gradient-to-t from-zinc-500 via-zinc-200 to-zinc-200 min-h-screen">
       <SimpleHeader />
 
+      {isLoading && (
+        <div className="fixed h-screen w-screen flex justify-center">
+          <CircleNotch className="animate-spin text-orange-500" size={42} />
+        </div>
+      )}
+
       <div className="flex flex-col md:flex-row gap-4 max-w-4xl p-4 mx-auto mt-6">
         <div className="flex md:flex-col gap-4 justify-center md:justify-start items-center flex-wrap">
-          <div className="flex flex-col justify-center items-center gap-2 bg-zinc-100 shadow-xl rounded p-4">
+          <div className="flex flex-col justify-center items-center gap-2 rounded px-4">
             <img
               src={user?.avatar}
               alt="Profile photo"
-              className="max-w-[-9rem] rounded-full"
+              className="max-w-[-9rem] rounded-full shadow-lg"
               referrerPolicy="no-referrer"
+              style={{
+                opacity: 0,
+                transform: "scale(0.86)",
+                transitionDuration: "700ms",
+              }}
+              onLoad={(t) => {
+                t.currentTarget.style.opacity = "1";
+                t.currentTarget.style.transform = "initial";
+              }}
             />
 
             <span className="text-lg md:text-xl font-normal">{user?.name}</span>
           </div>
 
           {valueHour && (
-            <div className="flex flex-col items-center bg-zinc-100 shadow-xl rounded p-4 self-end md:self-center">
+            <div className="flex flex-col items-center bg-zinc-100 shadow-xl rounded p-2 self-end md:self-center">
               <span className="text-base text-zinc-600">Valor hora</span>
               <strong className="font-normal text-2xl text-green-800">
                 {valueHour.toLocaleString("pt-BR", {
