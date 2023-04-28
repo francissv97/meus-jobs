@@ -1,5 +1,4 @@
 import { Timestamp } from "firebase/firestore";
-import toast from "react-hot-toast";
 import { Job } from "../types";
 
 export function generateJobID() {
@@ -46,27 +45,22 @@ export function calculateJobDeadline(
   return daysDifference;
 }
 
-export function calculateJobsNumbers(jobs: Job[]): {
+export function countJobStatus(jobs: Job[]): {
   inProgress: number;
   closeds: number;
 } {
-  const jobsMap =
-    jobs &&
-    jobs.map((job) => {
-      const deadline = calculateJobDeadline(
-        job.dailyHours,
-        job.totalHours,
-        job.createdAt
-      );
+  const { inProgress, closeds } = jobs.reduce(
+    (acc, curr) => {
+      if (!curr.markedAsDone) {
+        acc.inProgress++;
+      } else {
+        acc.closeds++;
+      }
 
-      return deadline > 0 ? 1 : 0;
-    });
-
-  const jobsInProgressArray = jobsMap.filter((f) => f == 1);
-  const jobsClosedsArray = jobsMap.filter((f) => f == 0);
-
-  const inProgress = jobsInProgressArray.length;
-  const closeds = jobsClosedsArray.length;
+      return acc;
+    },
+    { inProgress: 0, closeds: 0 }
+  );
 
   return { inProgress, closeds };
 }
@@ -75,7 +69,7 @@ export function calculateFreeTimeDay(profileHoursPerDay: number, jobs: Job[]) {
   if (jobs) {
     if (jobs.length == 0) return profileHoursPerDay;
 
-    const jobsMap = jobs.map((job) => {
+    const jobDeadlines = jobs.map((job) => {
       const deadline = calculateJobDeadline(
         job.dailyHours,
         job.totalHours,
@@ -85,7 +79,7 @@ export function calculateFreeTimeDay(profileHoursPerDay: number, jobs: Job[]) {
       return deadline > 0 ? job.dailyHours : 0;
     });
 
-    const hoursPerDayAllJobs = jobsMap.reduce((acc, curr) => acc + curr);
+    const hoursPerDayAllJobs = jobDeadlines.reduce((acc, curr) => acc + curr);
 
     return profileHoursPerDay - hoursPerDayAllJobs;
   }
