@@ -31,4 +31,6 @@ export interface Job {
   dailyHours: number;
   totalHours: number;
   createdAt: Timestamp;
+  markedAsDone: boolean;
+  completionDate: Timestamp;
 }
