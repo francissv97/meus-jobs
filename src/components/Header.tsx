@@ -4,7 +4,7 @@ import { UserInfo } from "./UserInfo";
 import { Logo } from "./Logo";
 import { AddNewJobModal } from "./AddNewJobModal";
 import { Job } from "../types";
-import { calculateFreeTimeDay, calculateJobsNumbers } from "../utils";
+import { calculateFreeTimeDay, countJobStatus } from "../utils";
 import { CircleNotch, Plus } from "phosphor-react";
 import { Divider } from "antd";
 
@@ -17,7 +17,7 @@ export function Header({ jobs, profileHoursPerDay }: HeaderProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { user } = useAuth();
-  const numbers = jobs && calculateJobsNumbers(jobs);
+  const numbers = jobs && countJobStatus(jobs);
   const freeTimeDay =
     profileHoursPerDay &&
     jobs &&
@@ -28,7 +28,7 @@ export function Header({ jobs, profileHoursPerDay }: HeaderProps) {
   }
 
   return (
-    <div className="bg-gradient-to-t from-zinc-700 via-zinc-600 to-zinc-600 pt-4 pb-16">
+    <div className="bg-gradient-to-t from-zinc-700 via-zinc-700 to-zinc-600 pt-4 pb-16">
       <div className="flex flex-col justify-between max-w-4xl mx-auto">
         <div className="flex w-full items-center justify-between px-4">
           <Logo />
@@ -36,8 +36,13 @@ export function Header({ jobs, profileHoursPerDay }: HeaderProps) {
           {user && <UserInfo name={user.name} avatar={user.avatar} />}
         </div>
 
-        {typeof freeTimeDay == "undefined" ? (
-          <CircleNotch className="animate-spin text-orange-500" size={32} />
+        {!freeTimeDay ? (
+          <div>
+            <CircleNotch
+              className="text-orange-500 mx-auto h-14 animate-spin"
+              size={28}
+            />
+          </div>
         ) : (
           <div className="px-4">
             <Divider style={{ borderColor: "#71717a" }}>
@@ -45,12 +50,12 @@ export function Header({ jobs, profileHoursPerDay }: HeaderProps) {
                 <p className="text-sm sm:text-base text-emerald-500 font-normal">{`${freeTimeDay} horas livres ao dia`}</p>
               ) : freeTimeDay == 1 ? (
                 <p className="text-sm sm:text-base text-amber-500 font-normal">{`${freeTimeDay} hora livre ao dia`}</p>
-              ) : freeTimeDay < 1 ? (
-                <p className="text-sm sm:text-base text-red-500 font-normal">
-                  Sem horas livres ao dia
-                </p>
               ) : (
-                <CircleNotch className="text-zinc-500 animate-spin" size={32} />
+                freeTimeDay < 1 && (
+                  <p className="text-sm sm:text-base text-red-500 font-normal">
+                    Sem horas livres ao dia
+                  </p>
+                )
               )}
             </Divider>
           </div>
