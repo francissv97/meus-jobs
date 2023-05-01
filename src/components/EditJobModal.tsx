@@ -9,7 +9,7 @@ import { FloppyDisk } from "phosphor-react";
 interface EditJobModalProps {
   open: boolean;
   closeModal: () => void;
-  job: Job; 
+  job: Job;
 }
 
 export function EditJobModal({ open, closeModal, job }: EditJobModalProps) {
@@ -55,6 +55,7 @@ export function EditJobModal({ open, closeModal, job }: EditJobModalProps) {
       open={open}
       onCancel={handleClose}
       title="Editar Job"
+      style={{ paddingInline: "8px" }}
       footer={null}
       destroyOnClose
     >

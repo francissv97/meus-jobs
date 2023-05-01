@@ -38,6 +38,7 @@ export function AddNewJobModal({ open, closeModal }: Props) {
       open={open}
       onCancel={handleClose}
       title="Adicionar Novo Job"
+      style={{ paddingInline: "8px" }}
       footer={null}
       destroyOnClose
     >

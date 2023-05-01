@@ -37,6 +37,7 @@ export function JobCard({ job, profileData }: JobCardProps) {
           concluído?
         </p>
       ),
+      style: { paddingInline: "8px" },
       cancelText: "Cancelar",
       cancelButtonProps: { type: "text" },
       okText: "Marcar como concluído",
@@ -65,6 +66,7 @@ export function JobCard({ job, profileData }: JobCardProps) {
           </p>
         </>
       ),
+      style: { paddingInline: "8px" },
       cancelText: "Cancelar",
       okText: "EXCLUIR",
       okType: "danger",
