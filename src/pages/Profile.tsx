@@ -134,11 +134,11 @@ export function Profile() {
               }}
             />
 
-            <span className="text-lg md:text-xl font-normal">{user?.name}</span>
+            <span className="text-lg md:text-xl font-normal text-center">{user?.name}</span>
           </div>
 
           {valueHour && (
-            <div className="flex flex-col items-center bg-zinc-100 shadow-xl rounded p-2 self-end md:self-center">
+            <div className="flex flex-col items-center bg-zinc-100 shadow-xl rounded p-2">
               <span className="text-base text-zinc-600">Valor hora</span>
               <strong className="font-normal text-2xl text-green-800">
                 {valueHour.toLocaleString("pt-BR", {

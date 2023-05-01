@@ -38,7 +38,7 @@ export function Dashboard() {
               if (isFirstAccess) {
                 toast(
                   "Primeiro acesso ao App. Por favor, preencha os dados do perfil para começar a adicionar jobs.",
-                  { duration: 4000 }
+                  { duration: 4000, id: "#0" }
                 );
                 return navigate("/profile");
               }
@@ -54,11 +54,14 @@ export function Dashboard() {
       const unsub = onSnapshot(doc(db, "users", user.email), (doc) => {
         const data = doc.data() as UserFirestoreDocData;
 
-        setAllJobs(
-          data.jobs.sort(
-            (a: Job, b: Job) => a.createdAt.toMillis() - b.createdAt.toMillis()
-          )
-        );
+        if (data.jobs) {
+          setAllJobs(
+            data.jobs.sort(
+              (a: Job, b: Job) =>
+                a.createdAt.toMillis() - b.createdAt.toMillis()
+            )
+          );
+        }
       });
 
       return unsub;
@@ -92,7 +95,7 @@ export function Dashboard() {
           <JobHunting />
         </div>
       ) : (
-        <Footer className="text-zinc-200 pb-4" />
+        <Footer className="text-zinc-300 pb-2" />
       )}
     </div>
   );
