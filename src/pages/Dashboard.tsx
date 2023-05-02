@@ -45,7 +45,7 @@ export function Dashboard() {
             }
           }
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       }
 
@@ -54,7 +54,7 @@ export function Dashboard() {
       const unsub = onSnapshot(doc(db, "users", user.email), (doc) => {
         const data = doc.data() as UserFirestoreDocData;
 
-        if (data.jobs) {
+        if (data) {
           setAllJobs(
             data.jobs.sort(
               (a: Job, b: Job) =>

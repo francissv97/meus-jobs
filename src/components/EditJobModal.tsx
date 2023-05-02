@@ -4,7 +4,8 @@ import { db } from "../services/firebase";
 import { useAuth } from "../hooks/useAuth";
 import { AddNewJobFieldValues, Job } from "../types";
 import { useAllJobs } from "../hooks/useAllJobs";
-import { FloppyDisk } from "phosphor-react";
+import { FloppyDisk, WarningCircle } from "phosphor-react";
+import { toast } from "react-hot-toast";
 
 interface EditJobModalProps {
   open: boolean;
@@ -18,30 +19,49 @@ export function EditJobModal({ open, closeModal, job }: EditJobModalProps) {
   const [form] = Form.useForm();
 
   async function handleSubmitEditJob() {
-    if (allJobs) {
-      const { title, dailyHours, totalHours } =
-        form.getFieldsValue() as AddNewJobFieldValues;
+    if (!allJobs) {
+      return;
+    }
 
-      const jobToBeEdited = allJobs.find((item) => item.id == job.id);
-      const remainingJobs = allJobs.filter((item) => item.id != job.id);
+    const { title, dailyHours, totalHours } =
+      form.getFieldsValue() as AddNewJobFieldValues;
 
-      if (jobToBeEdited && remainingJobs) {
-        jobToBeEdited.title = title;
-        jobToBeEdited.dailyHours = Number(dailyHours);
-        jobToBeEdited.totalHours = Number(totalHours);
-
-        remainingJobs.push(jobToBeEdited);
-
-        if (user?.email) {
-          const docRef = doc(db, "users", user.email);
-
-          await updateDoc(docRef, {
-            jobs: remainingJobs,
-          });
-
-          handleClose();
+    const updatedJobs = allJobs.reduce(
+      (accumulator: Job[], currentJob: Job) => {
+        if (currentJob.id === job.id) {
+          return [
+            ...accumulator,
+            {
+              ...currentJob,
+              title: title,
+              dailyHours: Number(dailyHours),
+              totalHours: Number(totalHours),
+            },
+          ];
         }
-      }
+
+        return [...accumulator, currentJob];
+      },
+      []
+    );
+
+    if (JSON.stringify(allJobs) === JSON.stringify(updatedJobs)) {
+      toast("Nenhuma alteração foi feita.", {
+        id: "#5@",
+        position: "bottom-right",
+        icon: <WarningCircle size={32} className="text-orange-400" />,
+      });
+      return;
+    }
+
+    if (user?.email) {
+      const docRef = doc(db, "users", user.email);
+
+      await updateDoc(docRef, {
+        jobs: updatedJobs,
+      });
+
+      handleClose();
     }
   }
 
@@ -71,7 +91,7 @@ export function EditJobModal({ open, closeModal, job }: EditJobModalProps) {
         layout="vertical"
       >
         <Form.Item
-          label="Title"
+          label="Título"
           name="title"
           rules={[{ required: true, message: "Campo obrigatório." }]}
         >

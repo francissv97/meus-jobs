@@ -5,12 +5,13 @@ export function generateJobID() {
   return Math.floor(Date.now() * Math.random()).toString(36);
 }
 
-export function calculateUserValueHour(
-  hoursPerDay: number,
-  daysPerWeek: number,
-  monthlyBudget: number,
-  vacationPerYear: number
-) {
+export function calculateUserValueHour(profile: {
+  hoursPerDay: number;
+  daysPerWeek: number;
+  monthlyBudget: number;
+  vacationPerYear: number;
+}) {
+  const { daysPerWeek, hoursPerDay, monthlyBudget, vacationPerYear } = profile;
   const weeksAYear = 52;
   const weeksAMonth = (weeksAYear - vacationPerYear) / 12;
   const totalHoursWorkedWeek = hoursPerDay * daysPerWeek;
@@ -65,22 +66,24 @@ export function countJobStatus(jobs: Job[]): {
   return { inProgress, closeds };
 }
 
+function isJobUnfinished(job: Job): boolean {
+  return !job.markedAsDone;
+}
+
 export function calculateFreeTimeDay(profileHoursPerDay: number, jobs: Job[]) {
-  if (jobs) {
-    if (jobs.length == 0) return profileHoursPerDay;
+  const unfinishedJobs = jobs.filter(isJobUnfinished);
 
-    const jobDeadlines = jobs.map((job) => {
-      const deadline = calculateJobDeadline(
-        job.dailyHours,
-        job.totalHours,
-        job.createdAt
-      );
+  const jobDeadlines = unfinishedJobs.map((job) => {
+    const deadline = calculateJobDeadline(
+      job.dailyHours,
+      job.totalHours,
+      job.createdAt
+    );
 
-      return deadline > 0 ? job.dailyHours : 0;
-    });
+    return deadline > 0 ? job.dailyHours : 0;
+  });
 
-    const hoursPerDayAllJobs = jobDeadlines.reduce((acc, curr) => acc + curr);
+  const hoursPerDayAllJobs = jobDeadlines.reduce((acc, curr) => acc + curr, 0);
 
-    return profileHoursPerDay - hoursPerDayAllJobs;
-  }
+  return profileHoursPerDay - hoursPerDayAllJobs;
 }

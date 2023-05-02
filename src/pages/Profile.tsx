@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
-import { Divider, Form, InputNumber } from "antd";
+import { Form, InputNumber } from "antd";
 import toast from "react-hot-toast";
 import { useAuth } from "../hooks/useAuth";
 import { ProfileType, UserFirestoreDocData } from "../types";
 import { SimpleHeader } from "../components/SimpleHeader";
 import { calculateUserValueHour } from "../utils";
-import { CircleNotch, FloppyDisk, PencilSimpleLine } from "phosphor-react";
+import {
+  CircleNotch,
+  FloppyDisk,
+  PencilSimpleLine,
+  WarningCircle,
+} from "phosphor-react";
 
 export function Profile() {
   const { user } = useAuth();
@@ -18,91 +23,93 @@ export function Profile() {
   const [profileState, setProfileState] = useState<ProfileType | null>();
 
   async function handleProfileForm() {
-    const { hoursPerDay, daysPerWeek, monthlyBudget, vacationPerYear } =
-      form.getFieldsValue() as ProfileType;
+    if (
+      profileState &&
+      !hasProfileChanged(form.getFieldsValue(), profileState)
+    ) {
+      toast("Nenhuma alteração foi feita.", {
+        id: "#3",
+        position: "bottom-right",
+        icon: <WarningCircle size={32} className="text-orange-400" />,
+      });
+      return;
+    }
 
-    await handleProfileSubmitFirestore({
-      hoursPerDay,
-      daysPerWeek,
-      monthlyBudget,
-      vacationPerYear,
-    });
-
-    setValueHour(
-      calculateUserValueHour(
-        hoursPerDay,
-        daysPerWeek,
-        monthlyBudget,
-        vacationPerYear
-      )
-    );
-
+    const profileValues = form.getFieldsValue() as ProfileType;
+    await handleProfileSubmitFirestore(profileValues);
+    setValueHour(calculateUserValueHour(profileValues));
+    setProfileState(profileValues);
     setIsFormDisabled(true);
   }
 
   async function handleProfileSubmitFirestore(profileValues: ProfileType) {
-    if (user?.email) {
-      const docRef = doc(db, "users", user.email);
+    if (!user?.email) return;
 
-      try {
-        await updateDoc(docRef, { profile: profileValues }).then(() =>
-          toast.success("Valores atualizados.!")
-        );
-      } catch (error) {
-        console.error(error);
-        toast.error("Erro ao tentar atualizar valores do perfil.");
-      }
+    setIsLoading(true);
+
+    const docRef = doc(db, "users", user.email);
+
+    try {
+      await updateDoc(docRef, { profile: profileValues }).then(() =>
+        toast.success("Valores atualizados.!")
+      );
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao tentar atualizar valores do perfil.");
     }
+
+    setIsLoading(false);
+  }
+
+  function hasProfileChanged(
+    profileState: ProfileType,
+    formValues: ProfileType
+  ) {
+    return JSON.stringify(profileState) !== JSON.stringify(formValues);
   }
 
   useEffect(() => {
     async function getProfileData() {
       setIsLoading(true);
-
-      if (user?.email) {
-        const docRef = doc(db, "users", user.email);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          const { profile } = docSnap.data() as UserFirestoreDocData;
-          const { hoursPerDay, daysPerWeek, monthlyBudget, vacationPerYear } =
-            profile;
-
-          const validateProfileValues = Boolean(
-            daysPerWeek && hoursPerDay && monthlyBudget && vacationPerYear
-          );
-
-          if (validateProfileValues) {
-            setProfileState({
-              monthlyBudget,
-              hoursPerDay,
-              daysPerWeek,
-              vacationPerYear,
-            });
-
-            form.setFieldsValue({
-              monthlyBudget: monthlyBudget,
-              hoursPerDay: hoursPerDay,
-              daysPerWeek: daysPerWeek,
-              vacationPerYear: vacationPerYear,
-            });
-
-            setValueHour(
-              calculateUserValueHour(
-                hoursPerDay,
-                daysPerWeek,
-                monthlyBudget,
-                vacationPerYear
-              )
-            );
-          } else {
-            setIsFormDisabled(false);
-          }
-        }
+      if (!user?.email) {
+        setIsLoading(false);
+        return;
       }
+      const docRef = doc(db, "users", user.email);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        setIsFormDisabled(false);
+        setIsLoading(false);
+        return;
+      }
+      const { profile } = docSnap.data() as UserFirestoreDocData;
+      const { hoursPerDay, daysPerWeek, monthlyBudget, vacationPerYear } =
+        profile;
+      const validateProfileValues = Boolean(
+        daysPerWeek && hoursPerDay && monthlyBudget && vacationPerYear
+      );
+
+      if (validateProfileValues) {
+        setProfileState({
+          monthlyBudget,
+          hoursPerDay,
+          daysPerWeek,
+          vacationPerYear,
+        });
+        form.setFieldsValue({
+          monthlyBudget,
+          hoursPerDay,
+          daysPerWeek,
+          vacationPerYear,
+        });
+        setValueHour(calculateUserValueHour(profile));
+      } else {
+        setIsFormDisabled(false);
+      }
+      setIsLoading(false);
     }
 
-    getProfileData().finally(() => setIsLoading(false));
+    getProfileData();
   }, []);
 
   return (
@@ -134,7 +141,9 @@ export function Profile() {
               }}
             />
 
-            <span className="text-lg md:text-xl font-normal text-center">{user?.name}</span>
+            <span className="text-lg md:text-xl font-normal text-center">
+              {user?.name}
+            </span>
           </div>
 
           {valueHour && (
@@ -152,13 +161,7 @@ export function Profile() {
 
         <div className="flex-1 flex flex-col px-4 pt-0 pb-4">
           {!profileState ? (
-            <Form
-              form={form}
-              layout="vertical"
-              onFinish={handleProfileForm}
-              autoComplete="off"
-              disabled={isFormDisabled}
-            >
+            <Form form={form} layout="vertical" disabled={isFormDisabled}>
               <Form.Item
                 name="monthlyBudget"
                 label={
@@ -250,12 +253,7 @@ export function Profile() {
               </Form.Item>
             </Form>
           ) : (
-            <Form
-              form={form}
-              layout="vertical"
-              onFinish={handleProfileForm}
-              disabled={isFormDisabled}
-            >
+            <Form form={form} layout="vertical" disabled={isFormDisabled}>
               <Form.Item
                 name="monthlyBudget"
                 label={
@@ -358,8 +356,10 @@ export function Profile() {
             </button>
           ) : (
             <button
-              onClick={() => form.submit()}
-              className="flex items-center gap-1 justify-center w-full md:w-fit text-xl px-4 py-2 md:px-7 rounded border-2 border-transparent text-zinc-100 bg-green-600 hover:bg-zinc-100 hover:border-green-600 hover:text-green-600 disabled:bg-zinc-400 disabled:cursor-not-allowed disabled:hover:border-transparent disabled:hover:text-zinc-100 transition"
+              onClick={() => {
+                handleProfileForm();
+              }}
+              className="flex items-center gap-1 justify-center w-full md:w-fit text-xl px-4 py-2 md:px-7 rounded text-zinc-50 bg-green-600 hover:bg-green-700 duration-300"
             >
               <FloppyDisk size={30} />
               Salvar

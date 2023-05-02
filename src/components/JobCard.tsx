@@ -96,15 +96,7 @@ export function JobCard({ job, profileData }: JobCardProps) {
 
   const jobValue =
     profileData &&
-    calculateJobValue(
-      job.totalHours,
-      calculateUserValueHour(
-        profileData.hoursPerDay,
-        profileData.daysPerWeek,
-        profileData.monthlyBudget,
-        profileData.vacationPerYear
-      )
-    );
+    calculateJobValue(job.totalHours, calculateUserValueHour(profileData));
 
   return (
     <div
@@ -202,13 +194,11 @@ export function JobCard({ job, profileData }: JobCardProps) {
         </div>
       </div>
 
-      {isEditJobModalOpen && (
-        <EditJobModal
-          open={isEditJobModalOpen}
-          closeModal={handleEditJobModalClose}
-          job={job}
-        />
-      )}
+      <EditJobModal
+        open={isEditJobModalOpen}
+        closeModal={handleEditJobModalClose}
+        job={job}
+      />
     </div>
   );
 }

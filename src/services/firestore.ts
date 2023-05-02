@@ -54,7 +54,7 @@ export async function createNewUserDocumentInFirestore(userEmail: string) {
       }
     }
   } catch (error) {
-    console.log("Error adding document: ", error);
+    console.error("Error adding document: ", error);
     toast.error("Erro ao tentar criar base de dados para este usuário..!");
   }
 }

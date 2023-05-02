@@ -22,7 +22,7 @@ export function AddNewJobModal({ open, closeModal }: Props) {
       addJob(user, title, dailyHours, totalHours)
         .then(() => handleClose())
         .catch((error) => {
-          console.log(error);
+          console.error(error);
           toast.error("Erro ao tentar adicionar Job.");
         });
     }
@@ -42,14 +42,9 @@ export function AddNewJobModal({ open, closeModal }: Props) {
       footer={null}
       destroyOnClose
     >
-      <Form
-        form={form}
-        onFinish={handleSubmitNewJob}
-        className="flex flex-col"
-        layout="vertical"
-      >
+      <Form form={form} className="flex flex-col" layout="vertical">
         <Form.Item
-          label="Title"
+          label="Título"
           name="title"
           rules={[{ required: true, message: "Campo obrigatório." }]}
         >
@@ -75,7 +70,7 @@ export function AddNewJobModal({ open, closeModal }: Props) {
         <button
           key={0}
           type="submit"
-          onClick={() => form.submit()}
+          onClick={handleSubmitNewJob}
           className="flex items-center w-fit self-end justify-center gap-1 rounded bg-emerald-600 hover:bg-emerald-700 transition text-xl px-4 py-2 text-zinc-100"
         >
           <FloppyDisk size={32} />

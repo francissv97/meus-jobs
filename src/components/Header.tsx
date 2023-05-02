@@ -5,7 +5,7 @@ import { Logo } from "./Logo";
 import { AddNewJobModal } from "./AddNewJobModal";
 import { Job } from "../types";
 import { calculateFreeTimeDay, countJobStatus } from "../utils";
-import { CircleNotch, Plus } from "phosphor-react";
+import { Plus } from "phosphor-react";
 import { Divider } from "antd";
 
 interface HeaderProps {
@@ -36,14 +36,7 @@ export function Header({ jobs, profileHoursPerDay }: HeaderProps) {
           {user && <UserInfo name={user.name} avatar={user.avatar} />}
         </div>
 
-        {!freeTimeDay ? (
-          <div>
-            <CircleNotch
-              className="text-orange-500 mx-auto h-14 animate-spin"
-              size={28}
-            />
-          </div>
-        ) : (
+        {typeof freeTimeDay != "undefined" && (
           <div className="px-4">
             <Divider style={{ borderColor: "#71717a" }}>
               {freeTimeDay > 1 ? (
