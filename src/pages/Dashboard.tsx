@@ -58,7 +58,7 @@ export function Dashboard() {
           setAllJobs(
             data.jobs.sort(
               (a: Job, b: Job) =>
-                a.createdAt.toMillis() - b.createdAt.toMillis()
+                b.createdAt.toMillis() - a.createdAt.toMillis()
             )
           );
         }
