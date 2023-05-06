@@ -15,16 +15,17 @@ export function AddNewJobModal({ open, closeModal }: Props) {
   const [form] = Form.useForm();
 
   async function handleSubmitNewJob() {
-    const { title, dailyHours, totalHours } =
-      form.getFieldsValue() as AddNewJobFieldValues;
+    try {
+      const { title, dailyHours, totalHours } =
+        form.getFieldsValue() as AddNewJobFieldValues;
 
-    if (user) {
-      addJob(user, title, dailyHours, totalHours)
-        .then(() => handleClose())
-        .catch((error) => {
-          console.error(error);
-          toast.error("Erro ao tentar adicionar Job.");
-        });
+      if (user) {
+        await addJob(user, title, dailyHours, totalHours);
+        handleClose();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao tentar adicionar Job.");
     }
   }
 

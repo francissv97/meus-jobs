@@ -36,23 +36,23 @@ export function Header({ jobs, profileHoursPerDay }: HeaderProps) {
           {user && <UserInfo name={user.name} avatar={user.avatar} />}
         </div>
 
-        {typeof freeTimeDay != "undefined" && (
-          <div className="px-4">
-            <Divider style={{ borderColor: "#71717a" }}>
-              {freeTimeDay > 1 ? (
-                <p className="text-sm sm:text-base text-emerald-500 font-normal">{`${freeTimeDay} horas livres ao dia`}</p>
-              ) : freeTimeDay == 1 ? (
-                <p className="text-sm sm:text-base text-amber-500 font-normal">{`${freeTimeDay} hora livre ao dia`}</p>
-              ) : (
-                freeTimeDay < 1 && (
-                  <p className="text-sm sm:text-base text-red-500 font-normal">
-                    Sem horas livres ao dia
-                  </p>
-                )
-              )}
-            </Divider>
-          </div>
-        )}
+        <div className="px-4">
+          <Divider style={{ borderColor: "#71717a", marginBlock: 12 }}>
+            {typeof freeTimeDay == "undefined" ? (
+              ""
+            ) : freeTimeDay > 1 ? (
+              <p className="text-sm sm:text-base text-emerald-500 font-normal">{`${freeTimeDay} horas livres ao dia`}</p>
+            ) : freeTimeDay == 1 ? (
+              <p className="text-sm sm:text-base text-amber-500 font-normal">{`${freeTimeDay} hora livre ao dia`}</p>
+            ) : (
+              freeTimeDay < 1 && (
+                <p className="text-sm sm:text-base text-red-500 font-normal">
+                  Sem horas livres ao dia
+                </p>
+              )
+            )}
+          </Divider>
+        </div>
 
         <div className="flex justify-between gap-x-2 gap-y-4 flex-wrap px-4">
           <div className="flex">
