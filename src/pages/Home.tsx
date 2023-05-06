@@ -1,14 +1,16 @@
+import { useState } from "react";
 import { Carousel } from "antd";
 import { useAuth } from "../hooks/useAuth";
 import { Dashboard } from "./Dashboard";
 import { Logo } from "../components/Logo";
 import { Loading } from "../components/Loading";
 import { Footer } from "../components/Footer";
-import { Check, GoogleLogo } from "phosphor-react";
+import { Check, CircleNotch, GoogleLogo } from "phosphor-react";
 import bgOne from "../assets/backgroundOne.jpg";
 import bgTwo from "../assets/backgroundTwo.jpg";
 
 export function Home() {
+  const [loading, setLoading] = useState(false);
   const { user, signInWithGoogle } = useAuth();
 
   if (typeof user == "undefined") {
@@ -45,7 +47,8 @@ export function Home() {
             <div className="flex-1 flex gap-6 flex-col items-center">
               <div className="">
                 <h1 className="font-medium text-zinc-700 text-3xl">
-                  Boas-vindas ao <span className="text-orange-600">MeusJOBS!</span>
+                  Boas-vindas ao{" "}
+                  <span className="text-orange-600">MeusJOBS!</span>
                 </h1>
 
                 <p className="text-lg mt-4">
@@ -93,17 +96,24 @@ export function Home() {
                 <strong className="block font-medium text-xl text-zinc-600">
                   Vamos Comecar?
                 </strong>
+
                 <button
-                  onClick={signInWithGoogle}
+                  onClick={() => {
+                    setLoading(true);
+                    signInWithGoogle().finally(() => setLoading(false));
+                  }}
                   className="flex items-center gap-1 text-xl p-2 rounded duration-300 text-orange-500 bg-zinc-100 shadow-md hover:shadow-xl hover:text-orange-600"
                 >
                   <GoogleLogo weight="bold" size={28} />
                   Continuar com o Google
+                  {loading && (
+                    <CircleNotch size={28} className="animate-spin" />
+                  )}
                 </button>
               </div>
             </div>
 
-            <Footer className="pb-2" />
+            <Footer className="pt-4 pb-2" />
           </div>
         </div>
       </div>
