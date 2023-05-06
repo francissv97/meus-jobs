@@ -24,12 +24,23 @@ export function Profile() {
 
   async function handleProfileForm() {
     if (
+      Object.values(form.getFieldsValue()).some((fieldValue) => !fieldValue)
+    ) {
+      toast("Por favor preencha todos os campos.", {
+        id: "#3",
+        position: "bottom-center",
+        icon: <WarningCircle size={32} className="text-orange-400" />,
+      });
+      return;
+    }
+
+    if (
       profileState &&
       !hasProfileChanged(form.getFieldsValue(), profileState)
     ) {
       toast("Nenhuma alteração foi feita.", {
         id: "#3",
-        position: "bottom-right",
+        position: "bottom-center",
         icon: <WarningCircle size={32} className="text-orange-400" />,
       });
       return;
