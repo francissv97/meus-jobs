@@ -28,12 +28,12 @@ export function Header({ jobs, profileHoursPerDay }: HeaderProps) {
   }
 
   return (
-    <div className="bg-gradient-to-t from-zinc-700 via-zinc-700 to-zinc-600 pt-4 pb-16">
+    <div className="bg-gradient-to-t from-zinc-700 to-zinc-600 pt-4 pb-16">
       <div className="flex flex-col justify-between max-w-4xl mx-auto">
         <div className="flex w-full items-center justify-between px-4">
           <Logo />
 
-          {user && <UserInfo name={user.name} avatar={user.avatar} />}
+          {user && <UserInfo name={user.name.split(" ")[0]} avatar={user.avatar} />}
         </div>
 
         <div className="px-4">
@@ -84,7 +84,7 @@ export function Header({ jobs, profileHoursPerDay }: HeaderProps) {
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="group flex items-center gap-1 bg-orange-500 hover:bg-orange-600 transition text-zinc-100 text-base sm:text-lg p-2 h-fit my-auto rounded ml-auto shadow-zinc-800 shadow-md"
+            className="group flex items-center gap-1 bg-orange-500 hover:bg-orange-600 transition text-zinc-100 text-base sm:text-lg p-2 h-fit my-auto rounded-lg ml-auto shadow-lg"
           >
             <Plus
               size={22}

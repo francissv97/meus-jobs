@@ -23,27 +23,23 @@ export function EditJobModal({ open, closeModal, job }: EditJobModalProps) {
       return;
     }
 
-    const { title, dailyHours, totalHours } =
-      form.getFieldsValue() as AddNewJobFieldValues;
+    const { title, dailyHours, totalHours } = form.getFieldsValue() as AddNewJobFieldValues;
 
-    const updatedJobs = allJobs.reduce(
-      (accumulator: Job[], currentJob: Job) => {
-        if (currentJob.id === job.id) {
-          return [
-            ...accumulator,
-            {
-              ...currentJob,
-              title: title,
-              dailyHours: Number(dailyHours),
-              totalHours: Number(totalHours),
-            },
-          ];
-        }
+    const updatedJobs = allJobs.reduce((accumulator: Job[], currentJob: Job) => {
+      if (currentJob.id === job.id) {
+        return [
+          ...accumulator,
+          {
+            ...currentJob,
+            title: title,
+            dailyHours: Number(dailyHours),
+            totalHours: Number(totalHours),
+          },
+        ];
+      }
 
-        return [...accumulator, currentJob];
-      },
-      []
-    );
+      return [...accumulator, currentJob];
+    }, []);
 
     if (JSON.stringify(allJobs) === JSON.stringify(updatedJobs)) {
       toast("Nenhuma alteração foi feita.", {
@@ -76,6 +72,9 @@ export function EditJobModal({ open, closeModal, job }: EditJobModalProps) {
       onCancel={handleClose}
       title="Editar Job"
       style={{ paddingInline: "8px" }}
+      width={864}
+      bodyStyle={{ padding: 16, backgroundColor: "#f2f2f2" }}
+      maskStyle={{ backdropFilter: "blur(2px)" }}
       footer={null}
       destroyOnClose
     >

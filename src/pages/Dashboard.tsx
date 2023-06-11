@@ -69,7 +69,7 @@ export function Dashboard() {
   }, []);
 
   return (
-    <div className="flex flex-col bg-gradient-to-t from-zinc-600 via-zinc-300 to-zinc-100 min-h-screen">
+    <div className="flex flex-col bg-zinc-200 min-h-screen">
       <Header jobs={allJobs} profileHoursPerDay={profileData?.hoursPerDay} />
 
       <div className="flex flex-1 flex-col gap-4 mt-4 max-w-4xl mx-auto -translate-y-12 w-full px-4">
@@ -95,7 +95,7 @@ export function Dashboard() {
           <JobHunting />
         </div>
       ) : (
-        <Footer className="text-zinc-300 pb-2" />
+        <Footer className="text-zinc-600 pb-2" />
       )}
     </div>
   );

@@ -16,8 +16,7 @@ export function AddNewJobModal({ open, closeModal }: Props) {
 
   async function handleSubmitNewJob() {
     try {
-      const { title, dailyHours, totalHours } =
-        form.getFieldsValue() as AddNewJobFieldValues;
+      const { title, dailyHours, totalHours } = form.getFieldsValue() as AddNewJobFieldValues;
 
       if (user) {
         await addJob(user, title, dailyHours, totalHours);
@@ -39,6 +38,9 @@ export function AddNewJobModal({ open, closeModal }: Props) {
       open={open}
       onCancel={handleClose}
       title="Adicionar Novo Job"
+      bodyStyle={{ padding: 16, backgroundColor: "#f2f2f2" }}
+      width={864}
+      maskStyle={{ backdropFilter: "blur(2px)" }}
       style={{ paddingInline: "8px" }}
       footer={null}
       destroyOnClose

@@ -7,7 +7,7 @@ export function NotFound() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col gap-6 bg-gradient-to-t from-zinc-500 via-zinc-200 to-zinc-200 justify-center items-center px-2 relative">
+    <div className="min-h-screen flex flex-col gap-6 bg-zinc-200 justify-center items-center px-2 relative">
       <div className="flex flex-1 flex-col justify-center">
         <ManLost />
 

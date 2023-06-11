@@ -7,12 +7,7 @@ import { useAuth } from "../hooks/useAuth";
 import { ProfileType, UserFirestoreDocData } from "../types";
 import { SimpleHeader } from "../components/SimpleHeader";
 import { calculateUserValueHour } from "../utils";
-import {
-  CircleNotch,
-  FloppyDisk,
-  PencilSimpleLine,
-  WarningCircle,
-} from "phosphor-react";
+import { CircleNotch, FloppyDisk, PencilSimpleLine, WarningCircle } from "phosphor-react";
 
 export function Profile() {
   const { user } = useAuth();
@@ -23,9 +18,7 @@ export function Profile() {
   const [profileState, setProfileState] = useState<ProfileType | null>();
 
   async function handleProfileForm() {
-    if (
-      Object.values(form.getFieldsValue()).some((fieldValue) => !fieldValue)
-    ) {
+    if (Object.values(form.getFieldsValue()).some((fieldValue) => !fieldValue)) {
       toast("Por favor preencha todos os campos.", {
         id: "#3",
         position: "bottom-center",
@@ -34,10 +27,7 @@ export function Profile() {
       return;
     }
 
-    if (
-      profileState &&
-      !hasProfileChanged(form.getFieldsValue(), profileState)
-    ) {
+    if (profileState && !hasProfileChanged(form.getFieldsValue(), profileState)) {
       toast("Nenhuma alteração foi feita.", {
         id: "#3",
         position: "bottom-center",
@@ -72,10 +62,7 @@ export function Profile() {
     setIsLoading(false);
   }
 
-  function hasProfileChanged(
-    profileState: ProfileType,
-    formValues: ProfileType
-  ) {
+  function hasProfileChanged(profileState: ProfileType, formValues: ProfileType) {
     return JSON.stringify(profileState) !== JSON.stringify(formValues);
   }
 
@@ -94,8 +81,7 @@ export function Profile() {
         return;
       }
       const { profile } = docSnap.data() as UserFirestoreDocData;
-      const { hoursPerDay, daysPerWeek, monthlyBudget, vacationPerYear } =
-        profile;
+      const { hoursPerDay, daysPerWeek, monthlyBudget, vacationPerYear } = profile;
       const validateProfileValues = Boolean(
         daysPerWeek && hoursPerDay && monthlyBudget && vacationPerYear
       );
@@ -124,16 +110,20 @@ export function Profile() {
   }, []);
 
   return (
-    <div className="bg-gradient-to-t from-zinc-500 via-zinc-200 to-zinc-200 min-h-screen">
+    <div className="bg-zinc-200 min-h-screen">
       <SimpleHeader />
 
       {isLoading && (
-        <div className="fixed h-screen w-screen flex justify-center">
+        <div className="fixed h-screen w-screen top-0 pt-4 flex justify-center">
           <CircleNotch className="animate-spin text-orange-500" size={42} />
         </div>
       )}
 
-      <div className="flex flex-col md:flex-row gap-4 max-w-4xl p-4 mx-auto mt-6">
+      <strong className="block font-normal border-b-2 my-4 border-zinc-400 text-xl w-fit mx-auto">
+        Calcule o seu valor/hora!
+      </strong>
+
+      <div className="flex flex-col md:flex-row gap-4 max-w-4xl mx-auto">
         <div className="flex md:flex-col gap-4 justify-center md:justify-start items-center flex-wrap">
           <div className="flex flex-col justify-center items-center gap-2 rounded px-4">
             <img
@@ -152,13 +142,11 @@ export function Profile() {
               }}
             />
 
-            <span className="text-lg md:text-xl font-normal text-center">
-              {user?.name}
-            </span>
+            <span className="text-lg md:text-xl font-normal text-center">{user?.name}</span>
           </div>
 
           {valueHour && (
-            <div className="flex flex-col items-center bg-zinc-100 shadow-xl rounded p-2">
+            <div className="flex flex-col items-center bg-zinc-50 shadow-xl rounded-lg p-4">
               <span className="text-base text-zinc-600">Valor hora</span>
               <strong className="font-normal text-2xl text-green-800">
                 {valueHour.toLocaleString("pt-BR", {
@@ -175,29 +163,15 @@ export function Profile() {
             <Form form={form} layout="vertical" disabled={isFormDisabled}>
               <Form.Item
                 name="monthlyBudget"
-                label={
-                  <p className="text-base">Quanto quero ganhar por mês?</p>
-                }
-                rules={[
-                  { required: true, message: "Este campo é obrigatório." },
-                ]}
+                label={<p className="text-base">Quanto quero ganhar por mês?</p>}
+                rules={[{ required: true, message: "Este campo é obrigatório." }]}
               >
-                <InputNumber
-                  prefix="R$"
-                  type="number"
-                  size="large"
-                  min={0}
-                  className="w-36 text-xl"
-                />
+                <InputNumber prefix="R$" type="number" size="large" min={0} className="w-36 text-xl" />
               </Form.Item>
 
               <Form.Item
                 name="hoursPerDay"
-                label={
-                  <p className="text-base">
-                    Quantas horas quero trabalhar por dia?
-                  </p>
-                }
+                label={<p className="text-base">Quantas horas quero trabalhar por dia?</p>}
                 rules={[
                   { required: true, message: "Este campo é obrigatório." },
                   {
@@ -206,22 +180,12 @@ export function Profile() {
                   },
                 ]}
               >
-                <InputNumber
-                  size="large"
-                  type="number"
-                  min={0}
-                  max={24}
-                  className="w-36 text-xl"
-                />
+                <InputNumber size="large" type="number" min={0} max={24} className="w-36 text-xl" />
               </Form.Item>
 
               <Form.Item
                 name="daysPerWeek"
-                label={
-                  <p className="text-base">
-                    Quantos dias quero trabalhar por semana?
-                  </p>
-                }
+                label={<p className="text-base">Quantos dias quero trabalhar por semana?</p>}
                 rules={[
                   { required: true, message: "Este campo é obrigatório." },
                   {
@@ -230,22 +194,12 @@ export function Profile() {
                   },
                 ]}
               >
-                <InputNumber
-                  type="number"
-                  size="large"
-                  min={0}
-                  max={7}
-                  className="w-36 text-xl"
-                />
+                <InputNumber type="number" size="large" min={0} max={7} className="w-36 text-xl" />
               </Form.Item>
 
               <Form.Item
                 name="vacationPerYear"
-                label={
-                  <p className="text-base">
-                    Quantas semanas por ano vocẽ quer tirar de férias?
-                  </p>
-                }
+                label={<p className="text-base">Quantas semanas por ano vocẽ quer tirar de férias?</p>}
                 rules={[
                   { required: true, message: "Este campo é obrigatório." },
                   {
@@ -254,42 +208,22 @@ export function Profile() {
                   },
                 ]}
               >
-                <InputNumber
-                  type="number"
-                  size="large"
-                  min={0}
-                  max={48}
-                  className="w-36 text-xl"
-                />
+                <InputNumber type="number" size="large" min={0} max={48} className="w-36 text-xl" />
               </Form.Item>
             </Form>
           ) : (
             <Form form={form} layout="vertical" disabled={isFormDisabled}>
               <Form.Item
                 name="monthlyBudget"
-                label={
-                  <p className="text-base">Quanto quero ganhar por mês?</p>
-                }
-                rules={[
-                  { required: true, message: "Este campo é obrigatório." },
-                ]}
+                label={<p className="text-base">Quanto quero ganhar por mês?</p>}
+                rules={[{ required: true, message: "Este campo é obrigatório." }]}
               >
-                <InputNumber
-                  prefix="R$"
-                  size="large"
-                  type="number"
-                  min={0}
-                  className="w-36 text-xl"
-                />
+                <InputNumber prefix="R$" size="large" type="number" min={0} className="w-36 text-xl" />
               </Form.Item>
 
               <Form.Item
                 name="hoursPerDay"
-                label={
-                  <p className="text-base">
-                    Quantas horas quero trabalhar por dia?
-                  </p>
-                }
+                label={<p className="text-base">Quantas horas quero trabalhar por dia?</p>}
                 rules={[
                   { required: true, message: "Este campo é obrigatório." },
                   {
@@ -298,22 +232,12 @@ export function Profile() {
                   },
                 ]}
               >
-                <InputNumber
-                  size="large"
-                  type="number"
-                  min={0}
-                  max={24}
-                  className="w-36 text-xl"
-                />
+                <InputNumber size="large" type="number" min={0} max={24} className="w-36 text-xl" />
               </Form.Item>
 
               <Form.Item
                 name="daysPerWeek"
-                label={
-                  <p className="text-base">
-                    Quantos dias quero trabalhar por semana?
-                  </p>
-                }
+                label={<p className="text-base">Quantos dias quero trabalhar por semana?</p>}
                 rules={[
                   { required: true, message: "Este campo é obrigatório." },
                   {
@@ -322,22 +246,12 @@ export function Profile() {
                   },
                 ]}
               >
-                <InputNumber
-                  type="number"
-                  size="large"
-                  min={0}
-                  max={7}
-                  className="w-36 text-xl"
-                />
+                <InputNumber type="number" size="large" min={0} max={7} className="w-36 text-xl" />
               </Form.Item>
 
               <Form.Item
                 name="vacationPerYear"
-                label={
-                  <p className="text-base">
-                    Quantas semanas por ano vocẽ quer tirar de férias?
-                  </p>
-                }
+                label={<p className="text-base">Quantas semanas por ano vocẽ quer tirar de férias?</p>}
                 rules={[
                   { required: true, message: "Este campo é obrigatório." },
                   {
@@ -346,13 +260,7 @@ export function Profile() {
                   },
                 ]}
               >
-                <InputNumber
-                  type="number"
-                  size="large"
-                  min={0}
-                  max={48}
-                  className="w-36 text-xl"
-                />
+                <InputNumber type="number" size="large" min={0} max={48} className="w-36 text-xl" />
               </Form.Item>
             </Form>
           )}

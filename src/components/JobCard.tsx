@@ -1,18 +1,9 @@
 import { useState } from "react";
 import { Modal } from "antd";
 import { Job, ProfileType } from "../types";
-import {
-  calculateJobDeadline,
-  calculateJobValue,
-  calculateUserValueHour,
-} from "../utils";
+import { calculateJobDeadline, calculateJobValue, calculateUserValueHour } from "../utils";
 import { EditJobModal } from "./EditJobModal";
-import {
-  PencilSimpleLine,
-  TrashSimple,
-  CheckCircle,
-  Checks,
-} from "phosphor-react";
+import { PencilSimpleLine, TrashSimple, CheckCircle, Checks } from "phosphor-react";
 import { markJobAsDone, removeJob } from "../services/firestore";
 import { useAuth } from "../hooks/useAuth";
 import { useAllJobs } from "../hooks/useAllJobs";
@@ -32,17 +23,18 @@ export function JobCard({ job, profileData }: JobCardProps) {
     confirm({
       content: (
         <p className="text-lg text-zinc-600">
-          Marcar o job{" "}
-          <span className="text-green-700 text-xl">{job.title}</span> como
-          concluído?
+          Marcar o job <span className="text-green-700 text-xl">{job.title}</span> como concluído?
         </p>
       ),
-      style: { paddingInline: "8px" },
+      width: 864,
+      style: { borderRadius: 16, overflow: "hidden" },
+      bodyStyle: { padding: 16 },
+      maskStyle: { backdropFilter: "blur(2px)" },
+      icon: null,
       cancelText: "Cancelar",
       cancelButtonProps: { type: "text" },
       okText: "Marcar como concluído",
       okType: "ghost",
-      icon: null,
       onOk: () => {
         if (user && allJobs) markJobAsDone(user, allJobs, job);
       },
@@ -55,18 +47,18 @@ export function JobCard({ job, profileData }: JobCardProps) {
         <>
           <div className="flex gap-4">
             <TrashSimple size={32} className="text-red-600" />
-            <strong className="font-normal text-zinc-600 text-xl">
-              Excluir job?
-            </strong>
+            <strong className="font-normal text-zinc-600 text-xl">Excluir job?</strong>
           </div>
 
           <p className="text-lg text-zinc-600 mt-4">
-            O job <span className="text-red-600 text-xl">{job.title}</span> será
-            apagado permanentemente.
+            O job <span className="text-red-600 text-xl">{job.title}</span> será apagado permanentemente.
           </p>
         </>
       ),
-      style: { paddingInline: "8px" },
+      bodyStyle: { padding: 16 },
+      maskStyle: { backdropFilter: "blur(2px)" },
+      width: 864,
+      style: { borderRadius: 16, overflow: "hidden" },
       cancelText: "Cancelar",
       okText: "EXCLUIR",
       okType: "danger",
@@ -75,11 +67,7 @@ export function JobCard({ job, profileData }: JobCardProps) {
     });
   };
 
-  const deadline = calculateJobDeadline(
-    job.dailyHours,
-    job.totalHours,
-    job.createdAt
-  );
+  const deadline = calculateJobDeadline(job.dailyHours, job.totalHours, job.createdAt);
 
   function handleEditJobModalClose() {
     setIsEditJobModalOpen(false);
@@ -94,13 +82,11 @@ export function JobCard({ job, profileData }: JobCardProps) {
 
   const jobInProgress = deadline > 0;
 
-  const jobValue =
-    profileData &&
-    calculateJobValue(job.totalHours, calculateUserValueHour(profileData));
+  const jobValue = profileData && calculateJobValue(job.totalHours, calculateUserValueHour(profileData));
 
   return (
     <div
-      className={`flex flex-col bg-zinc-100 gap-2 p-4 rounded shadow-xl ${
+      className={`flex flex-col bg-zinc-50 gap-2 p-4 rounded-lg shadow-xl ${
         job.markedAsDone
           ? "border-l-4 border-green-600"
           : jobInProgress
@@ -121,11 +107,7 @@ export function JobCard({ job, profileData }: JobCardProps) {
               } px-2 py-1 text-sm text-center rounded h-fit w-fit`}
             >
               <span className="whitespace-nowrap font-medium">
-                {job.markedAsDone
-                  ? "ENCERRADO"
-                  : jobInProgress
-                  ? "EM ANDAMENTO"
-                  : "PRAZO MAX. ATINGIDO"}
+                {job.markedAsDone ? "ENCERRADO" : jobInProgress ? "EM ANDAMENTO" : "PRAZO MAX. ATINGIDO"}
               </span>
             </div>
 
@@ -138,17 +120,11 @@ export function JobCard({ job, profileData }: JobCardProps) {
                   : "text-zinc-500 hover:bg-green-50 hover:text-green-700 hover:shadow-lg"
               } py-1 px-2 rounded-full duration-300`}
             >
-              {job.markedAsDone ? (
-                <Checks size={32} />
-              ) : (
-                <CheckCircle size={32} />
-              )}
+              {job.markedAsDone ? <Checks size={32} /> : <CheckCircle size={32} />}
             </button>
           </div>
 
-          <span className="text-zinc-700 text-lg md:text-xl font-medium mt-2 mr-auto">
-            {job.title}
-          </span>
+          <span className="text-zinc-700 text-lg md:text-xl font-medium mt-2 mr-auto">{job.title}</span>
         </div>
       </div>
 
@@ -156,11 +132,7 @@ export function JobCard({ job, profileData }: JobCardProps) {
         <div className="flex flex-col">
           <span className="text-sm text-zinc-500">Prazo</span>
           <span className="text-zinc-700 text-base">
-            {job.markedAsDone
-              ? "Encerrado"
-              : jobInProgress
-              ? deadlineContent
-              : "PRAZO MAX. ATINGIDO"}
+            {job.markedAsDone ? "Encerrado" : jobInProgress ? deadlineContent : "PRAZO MAX. ATINGIDO"}
           </span>
         </div>
 
@@ -196,11 +168,7 @@ export function JobCard({ job, profileData }: JobCardProps) {
         </div>
       </div>
 
-      <EditJobModal
-        open={isEditJobModalOpen}
-        closeModal={handleEditJobModalClose}
-        job={job}
-      />
+      <EditJobModal open={isEditJobModalOpen} closeModal={handleEditJobModalClose} job={job} />
     </div>
   );
 }
