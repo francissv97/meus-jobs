@@ -1,4 +1,4 @@
-<img alt="Project screenshot" src=".github/cover.svg" width="100%">
+<img alt="Project screenshot" src=".github/MeusJOBS.png" width="100%">
 
 <h2>Site published <a href="http://meusjobs.vercel.app/">here</a></h2>
 
