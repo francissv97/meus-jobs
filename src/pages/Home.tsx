@@ -5,7 +5,7 @@ import { Dashboard } from "./Dashboard";
 import { Logo } from "../components/Logo";
 import { Loading } from "../components/Loading";
 import { Footer } from "../components/Footer";
-import { Check, CircleNotch, GoogleLogo } from "phosphor-react";
+import { CircleNotch, GoogleLogo } from "phosphor-react";
 import bgOne from "../assets/backgroundOne.jpg";
 import bgTwo from "../assets/backgroundTwo.jpg";
 

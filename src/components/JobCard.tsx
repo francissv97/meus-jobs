@@ -129,22 +129,24 @@ export function JobCard({ job, profileData }: JobCardProps) {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex flex-col">
-          <span className="text-sm text-zinc-500">Prazo</span>
-          <span className="text-zinc-700 text-base">
-            {job.markedAsDone ? "Encerrado" : jobInProgress ? deadlineContent : "PRAZO MAX. ATINGIDO"}
-          </span>
-        </div>
+        <div className="flex gap-4">
+          <div className="flex flex-col">
+            <span className="text-sm text-zinc-500">Prazo</span>
+            <span className="text-zinc-700 text-base">
+              {job.markedAsDone ? "Encerrado" : jobInProgress ? deadlineContent : "PRAZO MAX. ATINGIDO"}
+            </span>
+          </div>
 
-        <div className="flex flex-col justify-center">
-          <span className="text-sm text-zinc-600">Valor</span>
-          <span className="text-zinc-700 text-base min-h-[20px]">
-            {jobValue &&
-              jobValue.toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              })}
-          </span>
+          <div className="flex flex-col justify-center">
+            <span className="text-sm text-zinc-600">Valor</span>
+            <span className="text-zinc-700 text-base min-h-[20px]">
+              {jobValue &&
+                jobValue.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
+            </span>
+          </div>
         </div>
 
         <div className="ml-auto">
